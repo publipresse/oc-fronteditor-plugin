@@ -1,0 +1,29 @@
+#fe-wrapper { position:fixed; left:20px; bottom:20px; z-index:10000; }
+#fe-wrapper button { position:relative; width:3rem; height:3rem; position:absolute; left:0; bottom:0; display:none; color:#fff; }
+#fe-wrapper button:before { content:''; position:absolute; left:0; top:0; width:100%; height:100%; background:#ccc; z-index:-1; background:#ccc; border-radius:50px; transition:transform 0.3s ease 0s; }
+#fe-wrapper button:hover:before { transform:scale(1.2); }
+#fe-wrapper button:after { content:''; position:absolute; left:50%; top:50%; margin:-25% 0 0 -25%; width:50%; height:50%; filter:brightness(0) invert(1); background-repeat:no-repeat; background-position:center center; background-size:contain; }
+
+#fe-wrapper .fe-edit { display:block; }
+#fe-wrapper .fe-edit:before { background:#2980b9; }
+#fe-wrapper .fe-edit:after { background-image:url(img/edit.svg); }
+#fe-wrapper .fe-valid:before { background:#27ae60; }
+#fe-wrapper .fe-valid:after { background-image:url(img/check.svg); }
+#fe-wrapper .fe-cancel { transform:translateY(calc(-100% - 0.5rem)); }
+#fe-wrapper .fe-cancel:before { background:#e74c3c; }
+#fe-wrapper .fe-cancel:after { background-image:url(img/cancel.svg); }
+
+#fe-wrapper.fe-open .fe-edit { display:none; }
+#fe-wrapper.fe-open .fe-valid,
+#fe-wrapper.fe-open .fe-cancel { display:block; }
+
+#fe-wrapper.fe-loading button { pointer-events:none; opacity:0.5; }
+#fe-wrapper.fe-loading .fe-edit:after,
+#fe-wrapper.fe-loading .fe-valid:after { background-image:url(img/loading.svg); animation: rotating 2s linear infinite; }
+
+.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); }
+
+@keyframes rotating {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
