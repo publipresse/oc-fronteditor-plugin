@@ -48,7 +48,7 @@ class TinyMCE extends ComponentBase
     {
         if(!$this->checkEditor()) return;
 
-        $this->addCss('assets/frontendeditor.css');
+        $this->addCss('assets/fronteditor.css');
         $this->addJs('assets/vendor/tinymce/tinymce.min.js', ['defer' => true]);
         $this->addJs('assets/vendor/tinymce/langs/fr_FR.js', ['defer' => true]);
         $this->addJs('assets/vendor/flmngr/flmngr.js', ['defer' => true]);
