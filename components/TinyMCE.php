@@ -17,7 +17,7 @@ use Publipresse\FrontEditor\Models\TinyMCESetting;
  */
 class TinyMCE extends ComponentBase
 {
-    public $content;
+    public $path;
     public $file;
     public $toolbar;
     public $tag;
@@ -69,17 +69,13 @@ class TinyMCE extends ComponentBase
         $this->tag = $this->property('tag');
         $this->file = $this->property('file');
         $this->class = $this->property('class');
-        $this->content = ''; 
         
         if(!$this->file) return;
-        $filePath = $this->getFilePath($this->file);
+        $this->path = $this->getFilePath($this->file);
 
         if(!$this->checkEditor()) return;
         $this->toolbar = $this->property('toolbar');
         $this->styles = ($this->property('styles'))? json_encode($this->property('styles')) : null;
-
-        if(!$this->fileExists($filePath)) return;
-        $this->content = $this->renderContent($filePath);
     }
 
     public function onSave()
@@ -103,20 +99,17 @@ class TinyMCE extends ComponentBase
         $fileContent->save();
     }
 
-    public function getFilePath($fileName) 
+    public function getFilePath($filename) 
     {
         $activeSite = Site::getSiteFromContext();
+        $filename = explode('.', $filename);
+        $filename[1] = isset($filename[1])? $filename[1] : 'htm';
         if($activeSite->group) {
-            $filePath = $activeSite->group->code.'/'.$activeSite->code.'/'.$fileName;
+            $filepath = $activeSite->group->code.'/'.$activeSite->code.'/'.$filename[0].'.'.$filename[1];
         } else {
-            $filePath = $activeSite->code.'/'.$fileName;
+            $filepath = $activeSite->code.'/'.$filename[0].'.'.$filename[1];
         }
-        return $filePath.'.htm';
-    }
-
-    public function fileExists($filePath)
-    {
-        return File::exists((new Content)->getFilePath($filePath));
+        return $filepath;
     }
 
     public function checkEditor()
