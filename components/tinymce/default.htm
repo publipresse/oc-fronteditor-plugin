@@ -9,10 +9,14 @@
         {% if __SELF__.toolbar %}data-toolbar="{{ __SELF__.toolbar }}"{% endif %}
         {% if __SELF__.styles %}data-styles="{{ __SELF__.styles }}"{% endif %}
     >
-        {% content __SELF__.path %}
+        {% if hasContent(__SELF__.path) %}
+            {% content __SELF__.path %}
+        {% endif %}
     </{{ tag }}>
 {% else %}
     <{{ tag }} class="{{ __SELF__.class }}">
-        {% content __SELF__.path %}
+        {% if hasContent(__SELF__.path) %}
+            {% content __SELF__.path %}
+        {% endif %}
     </{{ tag }}>
 {% endif %}

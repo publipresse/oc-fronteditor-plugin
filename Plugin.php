@@ -69,15 +69,6 @@ class Plugin extends PluginBase
     public function registerSettings()
     {
         return [
-            'redactorxsettings' => [
-                'label' => 'RedactorX Settings',
-                'description' => 'Manage RedactorX Settings.',
-                'icon' => 'icon-cog',
-                'class' => 'Publipresse\FrontEditor\Models\RedactorXSetting',
-                'category' => 'Front editor',
-                'order' => 500,
-                'permissions' => ['publipresse.fronteditor.access_settings']
-            ],
             'tinymcesettings' => [
                 'label' => 'TinyMCE Settings',
                 'description' => 'Manage TinyMCE Settings.',

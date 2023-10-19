@@ -72,6 +72,8 @@ class TinyMCE extends ComponentBase
         
         if(!$this->file) return;
         $this->path = $this->getFilePath($this->file);
+        if(!$this->path) return;
+
 
         if(!$this->checkEditor()) return;
         $this->toolbar = $this->property('toolbar');
