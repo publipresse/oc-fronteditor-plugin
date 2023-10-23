@@ -34,6 +34,7 @@ function initEditors() {
             extended_valid_elements: 'img[class=lazy|src|width|height|alt|loading=lazy]',
             preview_styles: false,
             relative_urls: true,
+            object_resizing: false,
             save_enablewhendirty: false,
             style_formats: styles,
             style_formats_merge: false,
