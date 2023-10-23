@@ -28,6 +28,8 @@ class TinyMCE extends ComponentBase
     public $skin;
     public $access;
 
+    public $renderCount;
+
     public function componentDetails()
     {
         return [
@@ -60,12 +62,14 @@ class TinyMCE extends ComponentBase
         $this->styles = json_encode(TinyMCESetting::get('styles'));
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');
         $this->access = true;
-        
-        $this->renderPartial('@buttons.htm');
     }
 
     public function onRender() 
     {
+        $this->renderCount = $this->page['renderCount'] += 1;
+
+        if($this->renderCount == 1) $this->renderPartial('@buttons.htm');
+        
         $this->tag = $this->property('tag');
         $this->file = $this->property('file');
         $this->class = $this->property('class');
