@@ -20,13 +20,16 @@ class TinyMCE extends ComponentBase
     public $path;
     public $file;
     public $toolbar;
+    public $toolbarPresets;
     public $tag;
     public $class;
     public $folder;
     public $styles;
+    public $stylesPresets;
     public $flmngr;
     public $skin;
     public $access;
+    public $editable;
 
     public $renderCount;
 
@@ -56,10 +59,11 @@ class TinyMCE extends ComponentBase
         $this->addJs('assets/vendor/flmngr/flmngr.js', ['defer' => true]);
         $this->addJs('assets/tinymce.js', ['defer' => true]);
 
-        $this->toolbar = TinyMCESetting::get('toolbar');
+        $this->toolbarPresets = TinyMCESetting::get('toolbars');
+        $this->stylesPresets = TinyMCESetting::get('styles');
+        
         $this->flmngr = TinyMCESetting::get('flmngr');
         $this->skin = TinyMCESetting::get('skin');
-        $this->styles = json_encode(TinyMCESetting::get('styles'));
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');
         $this->access = true;
     }
@@ -74,14 +78,15 @@ class TinyMCE extends ComponentBase
         $this->file = $this->property('file');
         $this->class = $this->property('class');
         
+        $this->editable = ($this->checkBypass())?? $this->property('editable');
+        
         if(!$this->file) return;
         $this->path = $this->getFilePath($this->file);
         if(!$this->path) return;
 
-
         if(!$this->checkEditor()) return;
         $this->toolbar = $this->property('toolbar');
-        $this->styles = ($this->property('styles'))? json_encode($this->property('styles')) : null;
+        $this->styles = $this->property('styles');
     }
 
     public function onSave()
@@ -92,9 +97,11 @@ class TinyMCE extends ComponentBase
         $filePath = $this->getFilePath($fileName);
 
         if ($load = Content::load($this->getTheme(), $filePath)) {
-            $fileContent = $load; // load existed content file
+            // load existed content file
+            $fileContent = $load;
         } else {
-            $fileContent = Content::inTheme($this->getTheme()); // create new content file if not exists
+            // create new content file if not exists
+            $fileContent = Content::inTheme($this->getTheme());
         }
 
         $fileContent->fill([
@@ -123,4 +130,12 @@ class TinyMCE extends ComponentBase
         $backendUser = BackendAuth::getUser();
         return $backendUser && $backendUser->hasAccess('publipresse.fronteditor.editor');
     }
+
+    public function checkBypass()
+    {
+        $backendUser = BackendAuth::getUser();
+        return $backendUser && $backendUser->hasAccess('publipresse.fronteditor.bypass');
+    }
+
+
 }

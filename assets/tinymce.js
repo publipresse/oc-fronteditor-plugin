@@ -1,13 +1,17 @@
 function initEditors() {
     const wrapper = document.querySelector('#fe-wrapper');
-    const header = document.querySelector('#header');
-    const editors = document.querySelectorAll('[data-editable]');
     const folder = wrapper.querySelector('#fe-folder').value
     const flmngrapi = wrapper.querySelector('#fe-flmngr').value;
     const skin = wrapper.querySelector('#fe-skin').value;
+    const editors = document.querySelectorAll('[data-editable]');
 
-    wrapper.classList.add('fe-loading');
     
+    // Don't display infinite loading if there is no editable content
+    if(editors.length > 0) {
+        wrapper.classList.add('fe-loading');
+    }
+    
+    // Preload file manager
     Flmngr.load({
         apiKey: flmngrapi,
         urlFileManager: '/flmngr',
@@ -15,10 +19,28 @@ function initEditors() {
     });
 
     editors.forEach(function(el) {
-        let styles = JSON.parse((el.dataset.styles)?? wrapper.querySelector('#fe-styles').value);
-        let toolbar = (el.dataset.toolbar)?? wrapper.querySelector('#fe-toolbar').value;
         let plugins = ['link', 'lists', 'media', 'code', 'table', 'emoticons', 'autolink', 'image', 'accordion', 'visualblocks'];
 
+        // If toolbar is a preset : load it
+        let toolbar = el.dataset.toolbar;
+        let toolbarPreset = wrapper.querySelector('#fe-toolbar-'+toolbar);
+        if(toolbarPreset) {
+            toolbar = toolbarPreset.value;
+        }
+
+        // If styles is a preset : load it
+        let styles = el.dataset.styles;
+        let stylesPreset = wrapper.querySelector('#fe-style-'+styles);
+        if(stylesPreset) {
+            styles = stylesPreset.value;
+        }
+        try {
+            styles = JSON.parse(styles);
+        } catch(e) {
+            console.log(e);
+        }
+
+        // Init TinyMCE
         tinymce.init({
             target: el,
             inline: true,
@@ -27,37 +49,26 @@ function initEditors() {
             plugins: plugins,
             menubar: false,
             toolbar: toolbar,
-            toolbar_sticky_offset: header.offsetHeight,
             link_context_toolbar: true,
             table_appearance_options: false,
             table_toolbar: '',
-            extended_valid_elements: 'img[class=lazy|src|width|height|alt|loading=lazy]',
+            extended_valid_elements: 'img[src|width|height|alt|loading=lazy]',
             preview_styles: false,
             relative_urls: true,
             object_resizing: false,
+            image_dimensions: false,
+            media_dimensions: false,
             save_enablewhendirty: false,
             style_formats: styles,
             style_formats_merge: false,
             style_formats_autohide: true,
             end_container_on_empty_block: true,
-            
             setup: function(editor) {
+
                 editor.on('init', function(e) {
                     // Add buttons loading and open options
                     wrapper.classList.remove('fe-loading');
                     wrapper.classList.add('fe-open');
-                    // Remove unwanted images attributes
-                    /*
-                    el.querySelectorAll('img').forEach(function(el) {
-                        el.removeAttribute('srcset');
-                        el.removeAttribute('sizes');
-                    });
-                    */
-
-                });
-                // Fix issue where the toolbar does not position correctly with several editors and scroll
-                editor.on('blur', function(e) {
-                    // window.dispatchEvent(new Event('resize'));
                 });
                 
                 editor.on('BeforeExecCommand', function(e) {
@@ -69,6 +80,7 @@ function initEditors() {
                             break;
                     }
                 });
+
                 // Prevent editor with only just images and media to allow something else
                 editor.on('keydown', function (e) {
                     const toolbarCount = toolbar.split(' ').length;
@@ -77,6 +89,8 @@ function initEditors() {
                         e.stopPropagation();
                     }
                 });
+
+                // Add edit image floating button
                 editor.ui.registry.addButton('image-edit', {
                     icon: 'edit-image',
                     tooltip: 'Edit',
@@ -94,13 +108,8 @@ function initEditors() {
 
                     }
                 });
-                editor.ui.registry.addButton('image-upload', {
-                    icon: 'upload',
-                    tooltip: 'Upload',
-                    onAction: function(api) { 
-                        console.log(api);
-                    }
-                });
+                
+                // Add edit image button to context toolbar
                 editor.ui.registry.addContextToolbar('image', {
                     predicate: (node) => node.nodeName.toLowerCase() === 'img',
                     items: 'link image image-edit',
@@ -143,14 +152,14 @@ function saveEditors() {
         const element = editor.getElement();
         const alias = element.dataset.editable;
         const file = element.dataset.file;
-        let toolbar = (element.dataset.toolbar)?? wrapper.querySelector('#fe-toolbar').value;
-        let content = editor.getContent();
-        console.log(content);
+        const content = editor.getContent();
         
-        const toolbarCount = toolbar.split(' ').length;
-        if(toolbarCount <= 2 && (toolbar.includes('image') || toolbar.includes('media'))) {
-            content = content.replace(/<p>(.*?)<\/p>/, '$1');
-        }
+        
+        // let toolbar = (element.dataset.toolbar)?? wrapper.querySelector('#fe-toolbar').value;
+        // const toolbarCount = toolbar.split(' ').length;
+        // if(toolbarCount <= 2 && (toolbar.includes('image') || toolbar.includes('media'))) {
+        //     content = content.replace(/<p>(.*?)<\/p>/, '$1');
+        // }
         
         oc.ajax(alias+'::onSave', {
             data: {

@@ -1,4 +1,4 @@
-#fe-wrapper { position:fixed; left:20px; bottom:20px; z-index:10000; }
+#fe-buttons { position:fixed; left:20px; bottom:20px; z-index:10000; }
 #fe-wrapper button { position:relative; width:3rem; height:3rem; position:absolute; left:0; bottom:0; display:none; color:#fff; }
 #fe-wrapper button:before { content:''; position:absolute; left:0; top:0; width:100%; height:100%; background:#ccc; z-index:-1; background:#ccc; border-radius:50px; transition:transform 0.3s ease 0s; }
 #fe-wrapper button:hover:before { transform:scale(1.2); }
@@ -21,7 +21,9 @@
 #fe-wrapper.fe-loading .fe-edit:after,
 #fe-wrapper.fe-loading .fe-valid:after { background-image:url(img/loading.svg); animation: rotating 2s linear infinite; }
 
-.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); }
+/* #fe-toolbar-container { position:fixed; left:0; bottom:0; width:100%; z-index:10; } */
+
+.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); outline-offset:-2px; }
 
 @keyframes rotating {
     from { transform: rotate(0deg); }

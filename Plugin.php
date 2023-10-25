@@ -59,6 +59,10 @@ class Plugin extends PluginBase
                 'tab' => 'Frontend Editor',
                 'label' => 'Allow to use frontend editor'
             ],
+            'publipresse.fronteditor.bypass' => [
+                'tab' => 'Frontend Editor',
+                'label' => 'Bypass editable restrictions'
+            ],
             'publipresse.fronteditor.access_settings' => [
                 'tab' => 'Frontend Editor',
                 'label' => 'Access frontend editor settings'

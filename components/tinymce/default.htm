@@ -3,11 +3,13 @@
 {% if __SELF__.access %}
     <{{ tag }} 
         class="{{ __SELF__.class }}"
-        data-editable="{{ __SELF__.alias }}" 
+        {% if __SELF__.editable == "true" %}
+            data-editable="{{ __SELF__.alias }}" 
+        {% endif %}
         data-file="{{ __SELF__.file }}"
         data-folder="{{ __SELF__.folder }}"
-        {% if __SELF__.toolbar %}data-toolbar="{{ __SELF__.toolbar }}"{% endif %}
-        {% if __SELF__.styles %}data-styles="{{ __SELF__.styles }}"{% endif %}
+        data-toolbar="{{ __SELF__.toolbar }}"
+        data-styles="{{ __SELF__.styles }}"
     >
         {% if hasContent(__SELF__.path) %}
             {% content __SELF__.path %}
