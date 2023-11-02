@@ -83,8 +83,6 @@ tabs:
                 vi: Vietnamese
                 'zh-Hans': Chinese Simplified
 
-
-
         # subfolder:
         #     label: Default subfolder
         #     type: text
@@ -112,7 +110,7 @@ tabs:
                         type: textarea
                         size: small
                         comment: 
-                            The default toolbar, see <a href="https://www.tiny.cloud/docs/tinymce/6/available-toolbar-buttons/" target="_blank">documentation</a>
+                            See <a href="https://www.tiny.cloud/docs/tinymce/6/available-toolbar-buttons/" target="_blank">documentation</a>
                         commentHtml: true
                         default: undo redo | h1 h2 h3 h4 h5 h6 | styles | bold italic link strikethrough | bullist numlist indent outdent accordion | hr image media blockquote table emoticons | alignleft aligncenter alignright alignjustify alignnone | code visualblocks
             default:

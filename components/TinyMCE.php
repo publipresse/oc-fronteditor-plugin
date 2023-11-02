@@ -60,19 +60,22 @@ class TinyMCE extends ComponentBase
     public function onRun()
     {
         if(!$this->checkEditor()) return;
+
         // Load TinyMCE
         $this->addJs('assets/vendor/tinymce/tinymce.min.js', ['defer' => true]);
         $this->addJs('assets/vendor/tinymce/langs/fr_FR.js', ['defer' => true]);
+
         // Load Flmngr
         $this->addJs('https://unpkg.com/flmngr', ['defer' => true]);
+
         // Load custom assets
         $this->addCss('assets/fronteditor.css');
         $this->addJs('assets/tinymce.js', ['defer' => true]);
 
+        // Define global variables
         $this->language = TinyMCESetting::get('language');
         $this->toolbarPresets = TinyMCESetting::get('toolbars');
         $this->stylesPresets = TinyMCESetting::get('styles');
-        
         $this->flmngr = TinyMCESetting::get('flmngr');
         $this->skin = TinyMCESetting::get('skin');
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');
@@ -81,15 +84,18 @@ class TinyMCE extends ComponentBase
 
     public function onRender() 
     {
+        // Render buttons first time only
         $this->renderCount = $this->page['renderCount'] += 1;
         if($this->renderCount == 1) $this->renderPartial('@buttons.htm');
         
+        // Define all default tags
         $this->tag = $this->property('tag');
         $this->file = $this->property('file');
         $this->class = $this->property('class');
         $this->editable = ($this->checkBypass())?? $this->property('editable');
         $this->content = null;
         
+        // Get file path and load content
         if(!$this->file) return;
         $this->path = $this->getFilePath($this->file);
         if(!$this->path) return;
@@ -99,6 +105,7 @@ class TinyMCE extends ComponentBase
             $this->content = Twig::parse($content);
         }
         
+        // If admin, get all useful variables
         if(!$this->checkEditor()) return;
         $this->toolbar = $this->property('toolbar');
         $this->styles = $this->property('styles');
@@ -106,6 +113,7 @@ class TinyMCE extends ComponentBase
         $this->width = $this->property('width');
         $this->height = $this->property('height');
         
+        // Media mode detection
         $toolbarCount = count(explode(' ', $this->toolbar));
         if($toolbarCount <= 2 && (str_contains($this->toolbar, 'image') || str_contains($this->toolbar, 'media'))) {
             $this->type = 'media';
@@ -114,10 +122,10 @@ class TinyMCE extends ComponentBase
         }
     }
 
+    // Save data to content
     public function onSave()
     {
         if(!$this->checkEditor()) return;
-
         $fileName = post('file');
         $filePath = $this->getFilePath($fileName);
 
@@ -137,10 +145,12 @@ class TinyMCE extends ComponentBase
         $fileContent->save();
     }
 
+    // Clear image cache
     public function onClearCache() {
         Artisan::call('responsive-images:clear');
     }
 
+    // Generate filepath as follow (Site group name / Site name / File name)
     public function getFilePath($filename) 
     {
         $activeSite = Site::getSiteFromContext();
@@ -154,12 +164,14 @@ class TinyMCE extends ComponentBase
         return $filepath;
     }
 
+    // Check editor access
     public function checkEditor()
     {
         $backendUser = BackendAuth::getUser();
         return $backendUser && $backendUser->hasAccess('publipresse.fronteditor.editor');
     }
 
+    // Check editor bypass access
     public function checkBypass()
     {
         $backendUser = BackendAuth::getUser();
