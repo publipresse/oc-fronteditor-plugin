@@ -4,7 +4,6 @@ function initEditors() {
     const flmngrapi = wrapper.querySelector('#fe-flmngr').value;
     const skin = wrapper.querySelector('#fe-skin').value;
     const editors = document.querySelectorAll('[data-editable]');
-
     
     // Don't display infinite loading if there is no editable content
     if(editors.length > 0) {
@@ -19,8 +18,9 @@ function initEditors() {
     });
 
     editors.forEach(function(el) {
-        let plugins = ['link', 'lists', 'media', 'code', 'table', 'emoticons', 'autolink', 'image', 'accordion', 'visualblocks'];
-
+        const plugins = ['link', 'lists', 'media', 'code', 'table', 'emoticons', 'autolink', 'image', 'accordion', 'visualblocks'];
+        const type = el.dataset.type;
+        
         // If toolbar is a preset : load it
         let toolbar = el.dataset.toolbar;
         let toolbarPreset = wrapper.querySelector('#fe-toolbar-'+toolbar);
@@ -33,11 +33,11 @@ function initEditors() {
         let stylesPreset = wrapper.querySelector('#fe-style-'+styles);
         if(stylesPreset) {
             styles = stylesPreset.value;
-        }
-        try {
-            styles = JSON.parse(styles);
-        } catch(e) {
-            console.log(e);
+            try {
+                styles = JSON.parse(styles);
+            } catch(e) {
+                console.log(e);
+            }
         }
 
         // Init TinyMCE
@@ -52,13 +52,14 @@ function initEditors() {
             link_context_toolbar: true,
             table_appearance_options: false,
             table_toolbar: '',
-            extended_valid_elements: 'img[src|width|height|alt|loading=lazy]',
+            extended_valid_elements: 'img[src|width|height|alt|style|loading=lazy],iframe[src|allowfullscreen]',
             preview_styles: false,
             relative_urls: true,
             object_resizing: false,
             image_dimensions: false,
             media_dimensions: false,
             save_enablewhendirty: false,
+            paste_block_drop: true,
             style_formats: styles,
             style_formats_merge: false,
             style_formats_autohide: true,
@@ -75,16 +76,27 @@ function initEditors() {
                     switch(e.command) {
                         // Remove previous class when switching format.
                         case 'mceToggleFormat':
-                            const target = editor.selection.getNode();
+                            var target = editor.selection.getNode();
                             target.className = '';
                             break;
                     }
                 });
+                
+                editor.on('execCommand', function(e) {
+                    switch(e.command) {
+                        // Set image aspect ratio to be the same than the one defined in component
+                        case 'mceUpdateImage':
+                            var target = editor.selection.getNode();
+                            target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
+                            break;
+                    }
+
+                });
 
                 // Prevent editor with only just images and media to allow something else
                 editor.on('keydown', function (e) {
-                    const toolbarCount = toolbar.split(' ').length;
-                    if(toolbarCount <= 2 && (toolbar.includes('image') || toolbar.includes('media'))) {
+                    console.log(type);
+                    if(type == 'media') {
                         e.preventDefault();
                         e.stopPropagation();
                     }
@@ -100,8 +112,8 @@ function initEditors() {
                             url: target.getAttribute('src'),
                             onSave: function(urlNew) {
                                 // Do anything you want with the new image 
-                                // target.setAttribute('src', Flmngr.getNoCacheUrl(urlNew));
-                                target.setAttribute('src', urlNew);
+                                target.setAttribute('src', Flmngr.getNoCacheUrl(urlNew));
+                                // target.setAttribute('src', urlNew);
                                 target.removeAttribute('data-mce-src');
                             }
                         });
@@ -122,8 +134,7 @@ function initEditors() {
                     isMultiple: false,
                     //urlFiles: folder,
                     onFinish: function(files) {
-                        //const timestamp = Date.now();
-                        const url = files[0].url;
+                        const url = Flmngr.getNoCacheUrl(files[0].url);
                         callback(url);
                     },
                 });
@@ -146,21 +157,49 @@ function destroyEditors() {
 
 function saveEditors() {
     const wrapper = document.querySelector('#fe-wrapper');
-    wrapper.classList.add('fe-loading');
+    const folder = wrapper.querySelector('#fe-folder').value;
     const editors = tinymce.get();
+    let isDirty = false;
+    
+    wrapper.classList.add('fe-loading');
+
+    // Check if at least one editor has changed;
     editors.forEach(function(editor) {
+        if(editor.isDirty() == true) {
+            isDirty = true;
+        }
+    });
+
+    if(isDirty === false) {
+        tinyMCE.remove();
+        wrapper.classList.remove('fe-loading', 'fe-open');
+        return;
+    }
+
+    editors.forEach(function(editor) {
+        
         const element = editor.getElement();
         const alias = element.dataset.editable;
         const file = element.dataset.file;
-        const content = editor.getContent();
-        
-        
-        // let toolbar = (element.dataset.toolbar)?? wrapper.querySelector('#fe-toolbar').value;
-        // const toolbarCount = toolbar.split(' ').length;
-        // if(toolbarCount <= 2 && (toolbar.includes('image') || toolbar.includes('media'))) {
-        //     content = content.replace(/<p>(.*?)<\/p>/, '$1');
-        // }
-        
+        let content = editor.getContent();
+
+        // Conver images markup
+        if(editor.isDirty()) {
+            let dom = new DOMParser().parseFromString(content, "text/html").body.firstElementChild;
+            dom.querySelectorAll('img').forEach(function(el) {
+                const width = element.dataset.width;
+                const height = element.dataset.height;
+                const mode = element.dataset.mode;
+                el.removeAttribute('style');
+                let src = new URL(el.src).pathname.replace(folder, '');
+                if(!src.includes('/resize/')) {
+                    el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                    content = dom.outerHTML;
+                }
+            });
+        }
+
+        // Save data
         oc.ajax(alias+'::onSave', {
             data: {
                 file: file,
@@ -172,4 +211,5 @@ function saveEditors() {
             }
         });
     });
+    
 }

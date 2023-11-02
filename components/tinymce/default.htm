@@ -1,4 +1,3 @@
-
 {% set tag = __SELF__.tag|default('div') %}
 {% if __SELF__.access %}
     <{{ tag }} 
@@ -7,18 +6,19 @@
             data-editable="{{ __SELF__.alias }}" 
         {% endif %}
         data-file="{{ __SELF__.file }}"
-        data-folder="{{ __SELF__.folder }}"
         data-toolbar="{{ __SELF__.toolbar }}"
         data-styles="{{ __SELF__.styles }}"
-    >
-        {% if hasContent(__SELF__.path) %}
-            {% content __SELF__.path %}
+        {% if __SELF__.type == 'media' %}
+            data-type="media"
+            data-width="{{ __SELF__.width|default(0) }}"
+            data-height="{{ __SELF__.height|default(0) }}"
+            data-mode="{{ __SELF__.mode|default('crop') }}"
         {% endif %}
+    >
+        {{ __SELF__.content|content }}
     </{{ tag }}>
 {% else %}
     <{{ tag }} class="{{ __SELF__.class }}">
-        {% if hasContent(__SELF__.path) %}
-            {% content __SELF__.path %}
-        {% endif %}
+        {{ __SELF__.content|content }}
     </{{ tag }}>
 {% endif %}
