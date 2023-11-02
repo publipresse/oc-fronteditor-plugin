@@ -14,17 +14,88 @@ tabs:
                 tinymce-5-dark: TinyMCE 5 dark
                 oxide: Oxide
                 oxide-dark: Oxide dark
-        subfolder:
-            label: Default subfolder
-            type: text
+        language:
+            label: Language
+            type: dropdown
             tab: Configuration
-            comment: Open the media manager in a subfolder relative to media manager path
+            default: en
+            options:
+                ar: Arabic
+                az: Azerbaijani
+                be: Belarusian
+                bg_BG: Bulgarian
+                bn_BD: Bengali
+                ca: Catalan
+                cs: Czech
+                cy: Welsh
+                da: Danish
+                de: German
+                dv: Dhivehi
+                el: Greek
+                en: English
+                eo: Esperanto
+                es: Spanish
+                es_MX: Spanish, Mexico
+                et: Estonian
+                eu: Basque
+                fa: Persian
+                fi: Finnish
+                fr_FR: French
+                ga: Irish
+                gl: Galician
+                he_IL: Hebrew
+                hi: Hindi
+                hr: Croatian
+                hu_HU: Hungarian
+                hy: Armenian
+                id: Indonesian
+                is_IS: Icelandic
+                it: Italian
+                ja: Japanese
+                ka_GE: Georgian
+                kab: Kabyle
+                kk: Kazakh
+                ko_KR: Korean
+                ku: Kurdish
+                lt: Lithuanian
+                lv: Latvian
+                nb_NO: Norwegian Bokmal
+                ne: Nepali
+                nl: Dutch
+                nl_BE: Dutch, Belgium
+                oc: Occitan
+                pl: Polish
+                pt_BR: Portuguese
+                ro: Romanian
+                ru: Russian
+                sk: Slovak
+                sl: Slovenian
+                sq: Albanian
+                sr: Serbian (Cyrillic)
+                sv_SE: Swedish
+                ta: Tamil
+                tg: Tajik
+                th: Thai
+                tr: Turkish
+                ug: Uyghur
+                uk: Ukrainian
+                uz: Uzbek
+                vi: Vietnamese
+                'zh-Hans': Chinese Simplified
+
+
+
+        # subfolder:
+        #     label: Default subfolder
+        #     type: text
+        #     tab: Configuration
+        #     comment: Open the media manager in a subfolder relative to media manager path
         flmngr:
             label: Flmngr API Key
             type: text
             tab: Configuration
-            default: ZwGPyINO
-            comment: ZwGPyINO is the default public key
+            default: FLMNFLMN
+            comment: FLMNFLMN is the default public key
         toolbars:
             label: Presets
             type: repeater

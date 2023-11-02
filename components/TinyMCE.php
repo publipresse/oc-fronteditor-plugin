@@ -20,6 +20,7 @@ class TinyMCE extends ComponentBase
 {
     public $path;
     public $file;
+    public $language;
     public $content;
     public $toolbar;
     public $toolbarPresets;
@@ -68,6 +69,7 @@ class TinyMCE extends ComponentBase
         $this->addCss('assets/fronteditor.css');
         $this->addJs('assets/tinymce.js', ['defer' => true]);
 
+        $this->language = TinyMCESetting::get('language');
         $this->toolbarPresets = TinyMCESetting::get('toolbars');
         $this->stylesPresets = TinyMCESetting::get('styles');
         

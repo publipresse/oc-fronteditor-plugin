@@ -3,6 +3,7 @@ function initEditors() {
     const folder = wrapper.querySelector('#fe-folder').value
     const flmngrapi = wrapper.querySelector('#fe-flmngr').value;
     const skin = wrapper.querySelector('#fe-skin').value;
+    const language = wrapper.querySelector('#fe-language').value;
     const editors = document.querySelectorAll('[data-editable]');
     
     // Don't display infinite loading if there is no editable content
@@ -45,7 +46,7 @@ function initEditors() {
             target: el,
             inline: true,
             skin: skin,
-            language: 'fr_FR',
+            language: language,
             plugins: plugins,
             menubar: false,
             toolbar: toolbar,
@@ -95,7 +96,6 @@ function initEditors() {
 
                 // Prevent editor with only just images and media to allow something else
                 editor.on('keydown', function (e) {
-                    console.log(type);
                     if(type == 'media') {
                         e.preventDefault();
                         e.stopPropagation();
@@ -111,10 +111,7 @@ function initEditors() {
                         Flmngr.editAndUpload({
                             url: target.getAttribute('src'),
                             onSave: function(urlNew) {
-                                // Do anything you want with the new image 
                                 target.setAttribute('src', Flmngr.getNoCacheUrl(urlNew));
-                                // target.setAttribute('src', urlNew);
-                                target.removeAttribute('data-mce-src');
                             }
                         });
 
