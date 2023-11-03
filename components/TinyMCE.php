@@ -117,6 +117,7 @@ class TinyMCE extends ComponentBase
         $this->height = $this->property('height'); unset($properties['height']);
         
         // Add all others properties
+        $this->extras = [];
         foreach($properties as $key => $property) {
             $this->extras[$key] = $property;
         }

@@ -23,7 +23,7 @@
 
 /* #fe-toolbar-container { position:fixed; left:0; bottom:0; width:100%; z-index:10; } */
 
-.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); outline-offset:-2px; }
+.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); outline-offset:-2px; min-height:1em; }
 
 @keyframes rotating {
     from { transform: rotate(0deg); }
