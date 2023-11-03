@@ -102,6 +102,15 @@ function initEditors() {
                     }
                 });
 
+                // Add paragraph
+                editor.ui.registry.addButton('p', {
+                    icon: 'paragraph',
+                    tooltip: 'Paragraph',
+                    onAction: function(api) { 
+                       editor.formatter.apply('p');
+                    }
+                });
+
                 // Add edit image floating button
                 editor.ui.registry.addButton('image-edit', {
                     icon: 'edit-image',
@@ -125,6 +134,7 @@ function initEditors() {
                     position: 'node',
                     scope: 'node'
                 });
+
             },
             file_picker_callback: function(callback, value, meta) {
                 Flmngr.open({
