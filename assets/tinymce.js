@@ -183,17 +183,19 @@ function saveEditors() {
         // Conver images markup
         if(editor.isDirty()) {
             let dom = new DOMParser().parseFromString(content, "text/html").body.firstElementChild;
-            dom.querySelectorAll('img').forEach(function(el) {
-                const width = element.dataset.width;
-                const height = element.dataset.height;
-                const mode = element.dataset.mode;
-                el.removeAttribute('style');
-                let src = new URL(el.src).pathname.replace(folder, '');
-                if(!src.includes('/resize/')) {
-                    el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
-                    content = dom.outerHTML;
-                }
-            });
+            if(dom) {
+                dom.querySelectorAll('img').forEach(function(el) {
+                    const width = element.dataset.width;
+                    const height = element.dataset.height;
+                    const mode = element.dataset.mode;
+                    el.removeAttribute('style');
+                    let src = new URL(el.src).pathname.replace(folder, '');
+                    if(!src.includes('/resize/')) {
+                        el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                        content = dom.outerHTML;
+                    }
+                });
+            }
         }
 
         // Save data

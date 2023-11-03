@@ -34,6 +34,7 @@ class TinyMCE extends ComponentBase
     public $skin;
     public $access;
     public $editable;
+    public $extras;
 
     public $width;
     public $height;
@@ -84,17 +85,19 @@ class TinyMCE extends ComponentBase
 
     public function onRender() 
     {
+        $properties = $this->getProperties();
+
         // Render buttons first time only
         $this->renderCount = $this->page['renderCount'] += 1;
         if($this->renderCount == 1) $this->renderPartial('@buttons.htm');
         
         // Define all default tags
-        $this->tag = $this->property('tag');
-        $this->file = $this->property('file');
-        $this->class = $this->property('class');
+        $this->tag = $this->property('tag'); unset($properties['tag']);
+        $this->file = $this->property('file'); unset($properties['file']);
+        $this->class = $this->property('class'); unset($properties['class']);
         $this->editable = ($this->checkBypass())?? $this->property('editable');
         $this->content = null;
-        
+
         // Get file path and load content
         if(!$this->file) return;
         $this->path = $this->getFilePath($this->file);
@@ -107,19 +110,24 @@ class TinyMCE extends ComponentBase
         
         // If admin, get all useful variables
         if(!$this->checkEditor()) return;
-        $this->toolbar = $this->property('toolbar');
-        $this->styles = $this->property('styles');
-        $this->mode = $this->property('mode');
-        $this->width = $this->property('width');
-        $this->height = $this->property('height');
+        $this->toolbar = $this->property('toolbar'); unset($properties['toolbar']);
+        $this->styles = $this->property('styles'); unset($properties['styles']);
+        $this->mode = $this->property('mode'); unset($properties['mode']);
+        $this->width = $this->property('width'); unset($properties['width']);
+        $this->height = $this->property('height'); unset($properties['height']);
         
+        // Add all others properties
+        foreach($properties as $key => $property) {
+            $this->extras[$key] = $property;
+        }
+
         // Media mode detection
+        $this->type = '';
         $toolbarCount = count(explode(' ', $this->toolbar));
         if($toolbarCount <= 2 && (str_contains($this->toolbar, 'image') || str_contains($this->toolbar, 'media'))) {
             $this->type = 'media';
-        } else {
-            $this->type = 'content';
         }
+
     }
 
     // Save data to content

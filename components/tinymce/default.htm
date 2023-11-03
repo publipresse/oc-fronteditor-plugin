@@ -14,11 +14,19 @@
             data-height="{{ __SELF__.height|default(0) }}"
             data-mode="{{ __SELF__.mode|default('crop') }}"
         {% endif %}
+        {% for key, extra in __SELF__.extras %}
+            {{ key }}="{{ extra }}"
+        {% endfor %}
     >
         {{ __SELF__.content|content }}
     </{{ tag }}>
 {% else %}
-    <{{ tag }} class="{{ __SELF__.class }}">
+    <{{ tag }} 
+        class="{{ __SELF__.class }}"
+        {% for key, extra in __SELF__.extras %}
+            {{ key }}="{{ extra }}"
+        {% endfor %}
+    >
         {{ __SELF__.content|content }}
     </{{ tag }}>
 {% endif %}
