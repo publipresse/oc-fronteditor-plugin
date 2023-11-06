@@ -129,6 +129,12 @@ class TinyMCE extends ComponentBase
             $this->type = 'media';
         }
 
+        // Reset properties
+        foreach($this->getProperties() as $key => $property) {
+            $this->setProperty($key, null);
+        }
+        
+
     }
 
     // Save data to content
