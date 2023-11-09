@@ -24,20 +24,24 @@ function initEditors() {
         
         // If toolbar is a preset : load it
         let toolbar = el.dataset.toolbar;
-        let toolbarPreset = wrapper.querySelector('#fe-toolbar-'+toolbar);
-        if(toolbarPreset) {
-            toolbar = toolbarPreset.value;
+        if(toolbar.trim().indexOf(' ') == -1 == true) {
+            let toolbarPreset = wrapper.querySelector('#fe-toolbar-'+toolbar.split(' ')[0]);
+            if(toolbarPreset) {
+                toolbar = toolbarPreset.value;
+            }
         }
 
         // If styles is a preset : load it
         let styles = el.dataset.styles;
-        let stylesPreset = wrapper.querySelector('#fe-style-'+styles);
-        if(stylesPreset) {
-            styles = stylesPreset.value;
-            try {
-                styles = JSON.parse(styles);
-            } catch(e) {
-                console.log(e);
+        if(styles.trim().indexOf(' ') == -1 == true) {
+            let stylesPreset = wrapper.querySelector('#fe-style-'+styles);
+            if(stylesPreset) {
+                styles = stylesPreset.value;
+                try {
+                    styles = JSON.parse(styles);
+                } catch(e) {
+                    console.log(e);
+                }
             }
         }
 
