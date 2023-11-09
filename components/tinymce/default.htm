@@ -2,7 +2,7 @@
 {% if __SELF__.access %}
     <{{ tag }} 
         class="{{ __SELF__.class }}"
-        {% if __SELF__.editable == "true" %}
+        {% if __SELF__.editable %}
             data-editable="{{ __SELF__.alias }}" 
         {% endif %}
         data-file="{{ __SELF__.file }}"

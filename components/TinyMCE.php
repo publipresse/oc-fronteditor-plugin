@@ -7,7 +7,6 @@ use Site;
 use Twig;
 use Cms\Classes\ComponentBase;
 use Cms\Classes\Content;
-use System\Classes\SiteManager;
 
 use Publipresse\FrontEditor\Models\TinyMCESetting;
 
@@ -95,7 +94,7 @@ class TinyMCE extends ComponentBase
         $this->tag = $this->property('tag'); unset($properties['tag']);
         $this->file = $this->property('file'); unset($properties['file']);
         $this->class = $this->property('class'); unset($properties['class']);
-        $this->editable = ($this->checkBypass())?? $this->property('editable');
+        $this->editable = (!$this->property('editable'))?? $this->checkBypass();
         $this->content = null;
 
         // Get file path and load content
