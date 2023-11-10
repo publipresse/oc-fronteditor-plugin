@@ -12,13 +12,5 @@ class TinyMCESetting extends \System\Models\SettingModel
     public $settingsFields = 'fields.yaml';
 
     protected $propagatableSync = true;
-    protected $propagatable = [
-        'skin',
-        'language',
-        'flmngr',
-        'toolbars',
-        'styles',
-        'forecolors',
-        'backcolors',
-    ];
+    protected $propagatable = [];
 }
