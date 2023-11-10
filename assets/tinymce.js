@@ -49,14 +49,14 @@ function initEditors() {
         let forecolors = wrapper.querySelector('#fe-forecolors').value;
         if (forecolors.length > 0) {
             forecolors = JSON.parse(forecolors);
-            forecolors = forecolors.map(item => [item.color.slice(1), item.name]).flat();
+            forecolors = forecolors.map(item => [item.color, item.name]).flat();
         }
         
         // Load backcolors
         let backcolors = wrapper.querySelector('#fe-backcolors').value;
         if (backcolors.length > 0) {
             backcolors = JSON.parse(backcolors);
-            backcolors = backcolors.map(item => [item.color.slice(1), item.name]).flat();
+            backcolors = backcolors.map(item => [item.color, item.name]).flat();
         }
         
         
