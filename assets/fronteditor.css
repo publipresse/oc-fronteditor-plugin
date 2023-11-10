@@ -21,9 +21,7 @@
 #fe-wrapper.fe-loading .fe-edit:after,
 #fe-wrapper.fe-loading .fe-valid:after { background-image:url(img/loading.svg); animation: rotating 2s linear infinite; }
 
-/* #fe-toolbar-container { position:fixed; left:0; bottom:0; width:100%; z-index:10; } */
-
-.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); outline-offset:-2px; min-height:1em; }
+.mce-content-body { outline:2px dashed rgba(243, 156, 18, 0.5); outline-offset:-2px; min-height:1em; min-width:1em; }
 
 @keyframes rotating {
     from { transform: rotate(0deg); }

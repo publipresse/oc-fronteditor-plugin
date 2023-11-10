@@ -87,7 +87,7 @@ class TinyMCE extends ComponentBase
         $properties = $this->getProperties();
 
         // Render buttons first time only
-        $this->renderCount = $this->page['renderCount'] += 1;
+        $this->renderCount += 1;
         if($this->renderCount == 1) $this->renderPartial('@buttons.htm');
         
         // Define all default tags
