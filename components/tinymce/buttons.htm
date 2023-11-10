@@ -20,6 +20,10 @@
             {% for style in __SELF__.stylesPresets %}
                 <input type="hidden" id="fe-style-{{ style.code }}" value="{{ style.style|json_encode }}" />
             {% endfor %}
+            
+            <input type="hidden" id="fe-forecolors" value="{{ (__SELF__.foreColors|length > 1)? __SELF__.foreColors|json_encode : '' }}" />
+            <input type="hidden" id="fe-backcolors" value="{{ (__SELF__.backColors|length > 1)? __SELF__.backColors|json_encode : '' }}" />
+
         </div>
     </div>
     

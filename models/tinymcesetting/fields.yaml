@@ -106,17 +106,16 @@ tabs:
                         type: text
                     toolbar:
                         label: Toolbar
-                        tab: Toolbar
                         type: textarea
                         size: small
                         comment: 
                             See <a href="https://www.tiny.cloud/docs/tinymce/6/available-toolbar-buttons/" target="_blank">documentation</a>
                         commentHtml: true
-                        default: undo redo | h1 h2 h3 h4 h5 h6 | styles | bold italic link strikethrough | bullist numlist indent outdent accordion | hr image media blockquote table emoticons | alignleft aligncenter alignright alignjustify alignnone | code visualblocks
+                        default: undo redo | h1 h2 h3 h4 h5 h6 | styles | bold italic link strikethrough forecolor backcolor | bullist numlist indent outdent accordion | hr image media blockquote table emoticons | alignleft aligncenter alignright alignjustify alignnone | code visualblocks
             default:
                 0:
                     code: full
-                    toolbar: undo redo | h1 h2 h3 h4 h5 h6 | styles | bold italic link strikethrough | bullist numlist indent outdent accordion | hr image media blockquote table emoticons | alignleft aligncenter alignright alignjustify alignnone | code visualblocks
+                    toolbar: undo redo | h1 h2 h3 h4 h5 h6 | styles | bold italic link strikethrough forecolor backcolor | bullist numlist indent outdent accordion | hr image media blockquote table emoticons | alignleft aligncenter alignright alignjustify alignnone | code visualblocks
         styles:
             label: Presets
             type: repeater
@@ -151,3 +150,25 @@ tabs:
                                 title: Merge siblings
                                 type: checkbox
                                 default: false
+        forecolors: 
+            label: Front colors
+            type: datatable
+            tab: Text colors
+            columns: 
+                color:
+                    title: Color
+                    type: string
+                name:
+                    title: Name
+                    type: string
+        backcolors: 
+            label: Back colors
+            type: datatable
+            tab: Text colors
+            columns: 
+                color:
+                    title: Color
+                    type: string
+                name:
+                    title: Name
+                    type: string

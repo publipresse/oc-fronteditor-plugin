@@ -29,6 +29,8 @@ class TinyMCE extends ComponentBase
     public $folder;
     public $styles;
     public $stylesPresets;
+    public $foreColors;
+    public $backColors;
     public $flmngr;
     public $skin;
     public $access;
@@ -76,6 +78,8 @@ class TinyMCE extends ComponentBase
         $this->language = TinyMCESetting::get('language');
         $this->toolbarPresets = TinyMCESetting::get('toolbars');
         $this->stylesPresets = TinyMCESetting::get('styles');
+        $this->foreColors = TinyMCESetting::get('forecolors');
+        $this->backColors = TinyMCESetting::get('backcolors');
         $this->flmngr = TinyMCESetting::get('flmngr');
         $this->skin = TinyMCESetting::get('skin');
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');

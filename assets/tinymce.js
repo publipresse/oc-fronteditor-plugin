@@ -45,6 +45,22 @@ function initEditors() {
             }
         }
 
+        // Load forecolors
+        let forecolors = wrapper.querySelector('#fe-forecolors').value;
+        if (forecolors.length > 0) {
+            forecolors = JSON.parse(forecolors);
+            forecolors = forecolors.map(item => [item.color.slice(1), item.name]).flat();
+        }
+        
+        // Load backcolors
+        let backcolors = wrapper.querySelector('#fe-backcolors').value;
+        if (backcolors.length > 0) {
+            backcolors = JSON.parse(backcolors);
+            backcolors = backcolors.map(item => [item.color.slice(1), item.name]).flat();
+        }
+        
+        
+
         // Init TinyMCE
         tinymce.init({
             target: el,
@@ -69,6 +85,9 @@ function initEditors() {
             style_formats_merge: false,
             style_formats_autohide: true,
             end_container_on_empty_block: true,
+            color_map_foreground: forecolors,
+            color_map_background: backcolors,
+            custom_colors: false,
             setup: function(editor) {
 
                 editor.on('init', function(e) {
