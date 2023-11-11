@@ -72,7 +72,6 @@ class TinyMCE extends ComponentBase
 
         // Load custom assets
         $this->addCss('assets/fronteditor.css');
-        $this->addJs('assets/tinymce.js', ['defer' => true]);
 
         // Define global variables
         $this->language = TinyMCESetting::get('language');
@@ -85,14 +84,17 @@ class TinyMCE extends ComponentBase
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');
         $this->access = true;
     }
-
+    
     public function onRender() 
     {
         $properties = $this->getProperties();
-
-        // Render buttons first time only
+        
+        // Render partials first time only
         $this->renderCount += 1;
-        if($this->renderCount == 1) $this->renderPartial('@buttons.htm');
+        if($this->renderCount == 1) { 
+            $this->renderPartial('@buttons.htm');
+            $this->renderPartial('@scripts.htm');
+        }
         
         // Define all default tags
         $this->tag = $this->property('tag'); unset($properties['tag']);

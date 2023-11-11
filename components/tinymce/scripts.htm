@@ -1,3 +1,5 @@
+{% put scripts %}
+<script>
 function initEditors() {
     const wrapper = document.querySelector('#fe-wrapper');
     const folder = wrapper.querySelector('#fe-folder').value
@@ -224,7 +226,9 @@ function saveEditors() {
                     el.removeAttribute('style');
                     let src = new URL(el.src).pathname.replace(folder, '');
                     if(!src.includes('/resize/')) {
-                        el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                        {% verbatim %}
+                            el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                        {% endverbatim %}
                         content = dom.outerHTML;
                     }
                 });
@@ -245,3 +249,5 @@ function saveEditors() {
     });
     
 }
+</script>
+{% endput %}
