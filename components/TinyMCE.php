@@ -112,34 +112,34 @@ class TinyMCE extends ComponentBase
             $content = $this->renderContent($this->path);
             $this->content = Twig::parse($content);
         }
-        
-        // If admin, get all useful variables
-        if(!$this->checkEditor()) return;
-        $this->toolbar = $this->property('toolbar'); unset($properties['toolbar']);
-        $this->styles = $this->property('styles'); unset($properties['styles']);
-        $this->mode = $this->property('mode'); unset($properties['mode']);
-        $this->width = $this->property('width'); unset($properties['width']);
-        $this->height = $this->property('height'); unset($properties['height']);
-        
+
         // Add all others properties
         $this->extras = [];
         foreach($properties as $key => $property) {
             $this->extras[$key] = $property;
         }
-
-        // Media mode detection
-        $this->type = '';
-        $toolbarCount = count(explode(' ', $this->toolbar));
-        if($toolbarCount <= 2 && (str_contains($this->toolbar, 'image') || str_contains($this->toolbar, 'media'))) {
-            $this->type = 'media';
-        }
+        
+        // If admin, get all useful variables
+        if($this->checkEditor()) {
+            $this->toolbar = $this->property('toolbar'); unset($properties['toolbar']);
+            $this->styles = $this->property('styles'); unset($properties['styles']);
+            $this->mode = $this->property('mode'); unset($properties['mode']);
+            $this->width = $this->property('width'); unset($properties['width']);
+            $this->height = $this->property('height'); unset($properties['height']);
+            
+            // Media mode detection
+            $this->type = '';
+            $toolbarCount = count(explode(' ', $this->toolbar));
+            if($toolbarCount <= 2 && (str_contains($this->toolbar, 'image') || str_contains($this->toolbar, 'media'))) {
+                $this->type = 'media';
+            }
+        };
 
         // Reset properties
         foreach($this->getProperties() as $key => $property) {
             $this->setProperty($key, null);
         }
         
-
     }
 
     // Save data to content
