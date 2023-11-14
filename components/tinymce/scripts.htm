@@ -18,6 +18,7 @@ function initEditors() {
         apiKey: flmngrapi,
         urlFileManager: '/flmngr',
         urlFiles: folder,
+        integration: 'octobercms',
     });
 
     editors.forEach(function(el) {
@@ -60,8 +61,6 @@ function initEditors() {
             backcolors = JSON.parse(backcolors);
             backcolors = backcolors.map(item => [item.color, item.name]).flat();
         }
-        
-        
 
         // Init TinyMCE
         tinymce.init({
@@ -143,7 +142,9 @@ function initEditors() {
                     onAction: function(api) { 
                         const target = editor.selection.getNode();
                         Flmngr.editAndUpload({
+                            apiKey: flmngrapi,
                             url: target.getAttribute('src'),
+                            integration: 'octobercms',
                             onSave: function(urlNew) {
                                 target.setAttribute('src', Flmngr.getNoCacheUrl(urlNew));
                             }
@@ -163,8 +164,10 @@ function initEditors() {
             },
             file_picker_callback: function(callback, value, meta) {
                 Flmngr.open({
+                    apiKey: flmngrapi,
                     isMultiple: false,
                     //urlFiles: folder,
+                    integration: 'octobercms',
                     onFinish: function(files) {
                         const url = Flmngr.getNoCacheUrl(files[0].url);
                         callback(url);
