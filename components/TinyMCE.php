@@ -76,7 +76,8 @@ class TinyMCE extends ComponentBase
         // Define global variables
         $this->language = TinyMCESetting::get('language');
         $this->toolbarPresets = TinyMCESetting::get('toolbars');
-        $this->stylesPresets = TinyMCESetting::get('styles');
+        $this->stylesPresets = $this->array_filter_recursive(TinyMCESetting::get('styles'));
+        
         $this->foreColors = TinyMCESetting::get('forecolors');
         $this->backColors = TinyMCESetting::get('backcolors');
         $this->flmngr = TinyMCESetting::get('flmngr');
@@ -198,5 +199,17 @@ class TinyMCE extends ComponentBase
         return $backendUser && $backendUser->hasAccess('publipresse.fronteditor.bypass');
     }
 
+    public function array_filter_recursive($input) 
+    { 
+      foreach ($input as &$value) 
+      { 
+        if (is_array($value)) 
+        { 
+          $value = $this->array_filter_recursive($value); 
+        } 
+      } 
+  
+      return array_filter($input); 
+    } 
 
 }

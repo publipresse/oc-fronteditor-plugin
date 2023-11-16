@@ -99,6 +99,9 @@ tabs:
             type: repeater
             tab: Toolbars
             prompt: Add a preset
+            commentAbove: 
+                See <a href="https://www.tiny.cloud/docs/tinymce/6/available-toolbar-buttons/" target="_blank">documentation</a>
+            commentHtml: true
             form:
                 fields:
                     code:
@@ -108,9 +111,6 @@ tabs:
                         label: Toolbar
                         type: textarea
                         size: small
-                        comment: 
-                            See <a href="https://www.tiny.cloud/docs/tinymce/6/available-toolbar-buttons/" target="_blank">documentation</a>
-                        commentHtml: true
                         default: undo redo | h1 h2 h3 h4 h5 h6 | styles | bold italic link strikethrough forecolor backcolor | bullist numlist indent outdent accordion | hr image media blockquote table emoticons | alignleft aligncenter alignright alignjustify alignnone | code visualblocks
             default:
                 0:
@@ -121,6 +121,9 @@ tabs:
             type: repeater
             tab: Styles
             prompt: Add a preset
+            commentAbove:
+                The default styles formats to apply, see <a href="https://www.tiny.cloud/docs/tinymce/6/user-formatting-options/#style_formats" target="_blank">documentation</a>
+            commentHtml: true
             form:
                 fields:
                     code:
@@ -129,15 +132,15 @@ tabs:
                     style: 
                         label: Style
                         type: datatable
-                        comment:
-                            The default styles formats to apply, see <a href="https://www.tiny.cloud/docs/tinymce/6/user-formatting-options/#style_formats" target="_blank">documentation</a>
-                        commentHtml: true
                         columns: 
                             title:
                                 title: Title
                                 type: string
                             block:
                                 title: Block
+                                type: string
+                            selector:
+                                title: Selector
                                 type: string
                             classes:
                                 title: Class
