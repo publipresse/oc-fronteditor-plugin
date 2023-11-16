@@ -112,6 +112,8 @@ function initEditors() {
                         // Set image aspect ratio to be the same than the one defined in component
                         case 'mceUpdateImage':
                             var target = editor.selection.getNode();
+                            target.setAttribute('width', el.dataset.width);
+                            target.setAttribute('height', el.dataset.height);
                             target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
                             break;
                     }
