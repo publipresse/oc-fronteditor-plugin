@@ -201,15 +201,16 @@ class TinyMCE extends ComponentBase
 
     public function array_filter_recursive($input) 
     { 
-      foreach ($input as &$value) 
-      { 
-        if (is_array($value)) 
+        if(is_null($input)) return;
+        foreach ($input as &$value) 
         { 
-          $value = $this->array_filter_recursive($value); 
+            if (is_array($value)) 
+            { 
+            $value = $this->array_filter_recursive($value); 
+            } 
         } 
-      } 
-  
-      return array_filter($input); 
+    
+        return array_filter($input); 
     } 
 
 }
