@@ -222,7 +222,7 @@ function saveEditors() {
 
         // Conver images markup
         if(editor.isDirty()) {
-            let dom = new DOMParser().parseFromString(content, "text/html").body.firstElementChild;
+            let dom = new DOMParser().parseFromString(content, "text/html").body;
             if(dom) {
                 dom.querySelectorAll('img').forEach(function(el) {
                     const width = element.dataset.width;
