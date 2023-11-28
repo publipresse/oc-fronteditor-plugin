@@ -231,10 +231,8 @@ function saveEditors() {
                     el.removeAttribute('style');
                     let src = new URL(el.src).pathname.replace(folder, '');
                     if(!src.includes('/resize/')) {
-                        {% verbatim %}
-                            el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
-                        {% endverbatim %}
-                        content = dom.outerHTML;
+                        {% verbatim %}el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");{% endverbatim %}
+                        content = dom.firstElementChild.outerHTML;
                     }
                 });
             }
