@@ -232,7 +232,7 @@ function saveEditors() {
                     let src = new URL(el.src).pathname.replace(folder, '');
                     if(!src.includes('/resize/')) {
                         {% verbatim %}el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");{% endverbatim %}
-                        content = dom.firstElementChild.outerHTML;
+                        content = dom.innerHTML;
                     }
                 });
             }
