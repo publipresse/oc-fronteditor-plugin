@@ -238,17 +238,21 @@ function saveEditors() {
             }
         }
 
-        // Save data
-        oc.ajax(alias+'::onSave', {
-            data: {
-                file: file,
-                content: content,
-            },
-            success: function() {
-                editor.remove();
-                wrapper.classList.remove('fe-loading', 'fe-open');
-            }
-        });
+        if(editor.isDirty()) {
+            // Save data
+            oc.ajax(alias+'::onSave', {
+                data: {
+                    file: file,
+                    content: content,
+                },
+                success: function() {
+                    editor.remove();
+                }
+            });
+        } else {
+            editor.remove();
+        }
+        wrapper.classList.remove('fe-loading', 'fe-open');
     });
     
 }
