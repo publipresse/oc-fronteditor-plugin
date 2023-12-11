@@ -69,6 +69,7 @@ function initEditors() {
             skin: skin,
             language: language,
             plugins: plugins,
+            entity_encoding: 'raw',
             menubar: false,
             toolbar: toolbar,
             link_context_toolbar: true,
@@ -111,13 +112,11 @@ function initEditors() {
                     switch(e.command) {
                         // Set image aspect ratio to be the same than the one defined in component
                         case 'mceUpdateImage':
-                            var target = editor.selection.getNode();
+                            let target = editor.selection.getNode();
                             target.setAttribute('width', el.dataset.width);
                             target.setAttribute('height', el.dataset.height);
                             target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
-                            break;
                     }
-
                 });
 
                 // Prevent editor with only just images and media to allow something else
@@ -231,7 +230,9 @@ function saveEditors() {
                     el.removeAttribute('style');
                     let src = new URL(el.src).pathname.replace(folder, '');
                     if(!src.includes('/resize/')) {
-                        {% verbatim %}el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");{% endverbatim %}
+                        {% verbatim %}
+                            el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                        {% endverbatim %}
                         content = dom.innerHTML;
                     }
                 });
