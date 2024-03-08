@@ -1,9 +1,14 @@
-{% if __SELF__.access %}
-    {% put scripts %}
-    <script>
-    function initEditors() {
-        const wrapper = document.querySelector('#fe-wrapper');
-        const folder = wrapper.querySelector('#fe-folder').value
+
+{% put scripts %}
+<script>
+let initEditors, destroyEditors, saveEditors;
+
+addEventListener('page:loaded', function() {
+    const wrapper = document.querySelector('#fe-wrapper');
+    const buttons = wrapper.querySelector('#fe-buttons');
+    const folder = wrapper.querySelector('#fe-folder').value
+
+    initEditors = function() {
         const flmngrapi = wrapper.querySelector('#fe-flmngr').value;
         const skin = wrapper.querySelector('#fe-skin').value;
         const language = wrapper.querySelector('#fe-language').value;
@@ -11,7 +16,7 @@
         
         // Don't display infinite loading if there is no editable content
         if(editors.length > 0) {
-            wrapper.classList.add('fe-loading');
+            buttons.classList.add('fe-loading');
         }
         
         // Preload file manager
@@ -24,7 +29,6 @@
     
         editors.forEach(function(el) {
             const plugins = ['link', 'lists', 'media', 'code', 'table', 'emoticons', 'autolink', 'image', 'accordion', 'visualblocks'];
-            const type = el.dataset.type;
             
             // If toolbar is a preset : load it
             let toolbar = el.dataset.toolbar;
@@ -95,8 +99,8 @@
     
                     editor.on('init', function(e) {
                         // Add buttons loading and open options
-                        wrapper.classList.remove('fe-loading');
-                        wrapper.classList.add('fe-open');
+                        buttons.classList.remove('fe-loading');
+                        buttons.classList.add('fe-open');
                     });
                     
                     editor.on('BeforeExecCommand', function(e) {
@@ -122,7 +126,7 @@
     
                     // Prevent editor with only just images and media to allow something else
                     editor.on('keydown', function (e) {
-                        if(type == 'media') {
+                        if(el.hasAttribute('data-media')) {
                             e.preventDefault();
                             e.stopPropagation();
                         }
@@ -133,7 +137,7 @@
                         icon: 'paragraph',
                         tooltip: 'Paragraph',
                         onAction: function(api) { 
-                           editor.formatter.apply('p');
+                        editor.formatter.apply('p');
                         }
                     });
     
@@ -181,24 +185,21 @@
         });
     }
     
-    function destroyEditors() {
-        const wrapper = document.querySelector('#fe-wrapper');
-        wrapper.classList.add('fe-loading');
+    destroyEditors = function() {
+        buttons.classList.add('fe-loading');
         const editors = tinymce.get();
         editors.forEach(function(editor) {
             editor.resetContent();
             editor.remove();
         });
-        wrapper.classList.remove('fe-loading', 'fe-open');
+        buttons.classList.remove('fe-loading', 'fe-open');
     }
     
-    function saveEditors() {
-        const wrapper = document.querySelector('#fe-wrapper');
-        const folder = wrapper.querySelector('#fe-folder').value;
+    saveEditors = function() {
         const editors = tinymce.get();
         let isDirty = false;
         
-        wrapper.classList.add('fe-loading');
+        buttons.classList.add('fe-loading');
     
         // Check if at least one editor has changed;
         editors.forEach(function(editor) {
@@ -209,7 +210,7 @@
     
         if(isDirty === false) {
             tinyMCE.remove();
-            wrapper.classList.remove('fe-loading', 'fe-open');
+            buttons.classList.remove('fe-loading', 'fe-open');
             return;
         }
     
@@ -218,6 +219,7 @@
             const element = editor.getElement();
             const alias = element.dataset.editable;
             const file = element.dataset.file;
+            const shared = element.dataset.shared;
             let content = editor.getContent();
     
             // Conver images markup
@@ -254,10 +256,11 @@
             } else {
                 editor.remove();
             }
-            wrapper.classList.remove('fe-loading', 'fe-open');
+            buttons.classList.remove('fe-loading', 'fe-open');
         });
         
     }
-    </script>
-    {% endput %}
-{% endif %}
+
+})
+</script>
+{% endput %}

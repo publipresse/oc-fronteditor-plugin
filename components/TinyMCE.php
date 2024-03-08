@@ -17,14 +17,13 @@ use Publipresse\FrontEditor\Models\TinyMCESetting;
  */
 class TinyMCE extends ComponentBase
 {
-    public $path;
     public $file;
     public $language;
+    public $editable;
     public $content;
     public $toolbar;
     public $toolbarPresets;
     public $tag;
-    public $type;
     public $class;
     public $folder;
     public $styles;
@@ -33,34 +32,23 @@ class TinyMCE extends ComponentBase
     public $backColors;
     public $flmngr;
     public $skin;
-    public $access;
-    public $editable;
     public $extras;
 
+    public $media;
+    public $mode;
     public $width;
     public $height;
-    public $mode;
 
     public $renderCount;
 
-    public function componentDetails()
-    {
+    public function componentDetails() {
         return [
             'name' => 'TinyMCE',
             'description' => 'Edit frontend content using TinyMCE'
         ];
     }
 
-    /**
-     * @link https://docs.octobercms.com/3.x/element/inspector-types.html
-     */
-    public function defineProperties()
-    {
-        return [];
-    }
-
-    public function onRun()
-    {
+    public function onRun() {
         if(!$this->checkEditor()) return;
 
         // Load TinyMCE
@@ -83,34 +71,23 @@ class TinyMCE extends ComponentBase
         $this->flmngr = TinyMCESetting::get('flmngr');
         $this->skin = TinyMCESetting::get('skin');
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');
-        $this->access = true;
     }
     
-    public function onRender() 
-    {
-        $properties = $this->getProperties();
+    public function onRender() {
         
-        // Render partials first time only
-        $this->renderCount += 1;
-        if($this->renderCount == 1) { 
-            $this->renderPartial('@buttons.htm');
-            $this->renderPartial('@scripts.htm');
-        }
+        $properties = $this->getProperties();
         
         // Define all default tags
         $this->tag = $this->property('tag'); unset($properties['tag']);
-        $this->file = $this->property('file'); unset($properties['file']);
+        $this->file = $this->getFilePath($this->property('file')); unset($properties['file']);
         $this->class = $this->property('class'); unset($properties['class']);
-        $this->editable = (!$this->property('editable'))?? $this->checkBypass();
         $this->content = null;
-
+        
         // Get file path and load content
         if(!$this->file) return;
-        $this->path = $this->getFilePath($this->file);
-        if(!$this->path) return;
 
-        if(Content::load($this->getTheme(), $this->path)) {
-            $content = $this->renderContent($this->path);
+        if(Content::load($this->getTheme(), $this->file)) {
+            $content = $this->renderContent($this->file);
             $this->content = Twig::parse($content);
         }
 
@@ -120,20 +97,24 @@ class TinyMCE extends ComponentBase
             $this->extras[$key] = $property;
         }
         
-        // If admin, get all useful variables
+        // If user have access to the editor
         if($this->checkEditor()) {
+
+            // Render script and buttons only first time
+            $this->renderCount += 1;
+            if($this->renderCount == 1) { 
+                $this->renderPartial('@buttons.htm');
+                $this->renderPartial('@scripts.htm');
+            }
+
+            // Define all useful variables
+            $this->editable = true;
             $this->toolbar = $this->property('toolbar'); unset($properties['toolbar']);
             $this->styles = $this->property('styles'); unset($properties['styles']);
-            $this->mode = $this->property('mode'); unset($properties['mode']);
+            $this->media = $this->property('media'); unset($properties['media']);
             $this->width = $this->property('width'); unset($properties['width']);
             $this->height = $this->property('height'); unset($properties['height']);
-            
-            // Media mode detection
-            $this->type = '';
-            $toolbarCount = count(explode(' ', $this->toolbar));
-            if($toolbarCount <= 2 && (str_contains($this->toolbar, 'image') || str_contains($this->toolbar, 'media'))) {
-                $this->type = 'media';
-            }
+            $this->mode = $this->property('mode'); unset($properties['mode']);
         };
 
         // Reset properties
@@ -144,11 +125,10 @@ class TinyMCE extends ComponentBase
     }
 
     // Save data to content
-    public function onSave()
-    {
+    public function onSave() {
         if(!$this->checkEditor()) return;
-        $fileName = post('file');
-        $filePath = $this->getFilePath($fileName);
+
+        $filePath = post('file');
 
         if ($load = Content::load($this->getTheme(), $filePath)) {
             // load existed content file
@@ -166,50 +146,39 @@ class TinyMCE extends ComponentBase
         $fileContent->save();
     }
 
-    // Clear image cache
-    public function onClearCache() {
-        Artisan::call('responsive-images:clear');
-    }
-
     // Generate filepath as follow (Site group name / Site name / File name)
-    public function getFilePath($filename) 
-    {
+    // If shared = true, site name is ommitted.
+    public function getFilePath($filename) {
+
         $activeSite = Site::getSiteFromContext();
         $filename = explode('.', $filename);
         $filename[1] = isset($filename[1])? $filename[1] : 'htm';
+
+        $filepath = '';
         if($activeSite->group) {
-            $filepath = $activeSite->group->code.'/'.$activeSite->code.'/'.$filename[0].'.'.$filename[1];
-        } else {
-            $filepath = $activeSite->code.'/'.$filename[0].'.'.$filename[1];
+            $filepath .= $activeSite->group->code.'/';
         }
+        if($this->property('shared') !== true) {
+            $filepath .= $activeSite->code.'/';
+        }
+        
+        $filepath .= $filename[0].'.'.$filename[1];
         return $filepath;
     }
 
     // Check editor access
-    public function checkEditor()
-    {
+    public function checkEditor() {
         $backendUser = BackendAuth::getUser();
         return $backendUser && $backendUser->hasAccess('publipresse.fronteditor.editor');
     }
 
-    // Check editor bypass access
-    public function checkBypass()
-    {
-        $backendUser = BackendAuth::getUser();
-        return $backendUser && $backendUser->hasAccess('publipresse.fronteditor.bypass');
-    }
-
-    public function array_filter_recursive($input) 
-    { 
+    public function array_filter_recursive($input) { 
         if(is_null($input)) return;
-        foreach ($input as &$value) 
-        { 
-            if (is_array($value)) 
-            { 
-            $value = $this->array_filter_recursive($value); 
+        foreach ($input as &$value) { 
+            if (is_array($value)) { 
+                $value = $this->array_filter_recursive($value); 
             } 
         } 
-    
         return array_filter($input); 
     } 
 

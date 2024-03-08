@@ -1,32 +1,29 @@
-{% if __SELF__.access %}
-    {% put bodyEnd %}
-        <div id="fe-wrapper">
-    
-            <div id="fe-buttons">
-                <button class="fe-edit" onclick="initEditors()"></button>
-                <button class="fe-valid" onclick="saveEditors()"></button>
-                <button class="fe-cancel" onclick="destroyEditors()"></button>
-            </div>
-    
-            <div id="fe-inputs">
-                <input type="hidden" id="fe-language" value="{{ __SELF__.language }}" />
-                <input type="hidden" id="fe-folder" value="{{ __SELF__.folder }}" />
-                <input type="hidden" id="fe-flmngr" value="{{ __SELF__.flmngr }}" />
-                <input type="hidden" id="fe-skin" value="{{ __SELF__.skin }}" />
-    
-                {% for toolbar in __SELF__.toolbarPresets %}
-                    <input type="hidden" id="fe-toolbar-{{ toolbar.code }}" value="{{ toolbar.toolbar }}" />
-                {% endfor %}
-    
-                {% for style in __SELF__.stylesPresets %}
-                    <input type="hidden" id="fe-style-{{ style.code }}" value="{{ style.style|json_encode }}" />
-                {% endfor %}
-                
-                <input type="hidden" id="fe-forecolors" value="{{ (__SELF__.foreColors|length > 1)? __SELF__.foreColors|json_encode : '' }}" />
-                <input type="hidden" id="fe-backcolors" value="{{ (__SELF__.backColors|length > 1)? __SELF__.backColors|json_encode : '' }}" />
-    
-            </div>
+{% put frontEditor %}
+    <div id="fe-wrapper">
+
+        <div id="fe-buttons">
+            <button class="fe-edit" onclick="initEditors()"></button>
+            <button class="fe-valid" onclick="saveEditors()"></button>
+            <button class="fe-cancel" onclick="destroyEditors()"></button>
         </div>
-        
-    {% endput %}
-{% endif %}
+
+        <div id="fe-inputs">
+            <input type="hidden" id="fe-language" value="{{ __SELF__.language }}" />
+            <input type="hidden" id="fe-folder" value="{{ __SELF__.folder }}" />
+            <input type="hidden" id="fe-flmngr" value="{{ __SELF__.flmngr }}" />
+            <input type="hidden" id="fe-skin" value="{{ __SELF__.skin }}" />
+
+            {% for toolbar in __SELF__.toolbarPresets %}
+                <input type="hidden" id="fe-toolbar-{{ toolbar.code }}" value="{{ toolbar.toolbar }}" />
+            {% endfor %}
+
+            {% for style in __SELF__.stylesPresets %}
+                <input type="hidden" id="fe-style-{{ style.code }}" value="{{ style.style|json_encode }}" />
+            {% endfor %}
+            
+            <input type="hidden" id="fe-forecolors" value="{{ (__SELF__.foreColors|length > 1)? __SELF__.foreColors|json_encode : '' }}" />
+            <input type="hidden" id="fe-backcolors" value="{{ (__SELF__.backColors|length > 1)? __SELF__.backColors|json_encode : '' }}" />
+        </div>
+
+    </div>
+{% endput %}

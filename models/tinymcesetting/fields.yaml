@@ -82,12 +82,6 @@ tabs:
                 uz: Uzbek
                 vi: Vietnamese
                 'zh-Hans': Chinese Simplified
-
-        # subfolder:
-        #     label: Default subfolder
-        #     type: text
-        #     tab: Configuration
-        #     comment: Open the media manager in a subfolder relative to media manager path
         flmngr:
             label: Flmngr API Key
             type: text
@@ -157,6 +151,8 @@ tabs:
             label: Front colors
             type: datatable
             tab: Text colors
+            commentAbove: Colors to use when you use the <a href="https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/#color_map_foreground" target="_blank">forecolor</a> tool.
+            commentHtml: true
             columns: 
                 color:
                     title: Color
@@ -168,6 +164,8 @@ tabs:
             label: Back colors
             type: datatable
             tab: Text colors
+            commentAbove: Colors to use when you use the <a href="https://www.tiny.cloud/docs/tinymce/latest/user-formatting-options/#color_map_background" target="_blank">backcolor</a> tool.
+            commentHtml: true
             columns: 
                 color:
                     title: Color

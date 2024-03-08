@@ -1,15 +1,13 @@
 {% set tag = __SELF__.tag|default('div') %}
-{% if __SELF__.access %}
+{% if __SELF__.editable %}
     <{{ tag }} 
         class="{{ __SELF__.class }}"
-        {% if __SELF__.editable %}
-            data-editable="{{ __SELF__.alias }}" 
-        {% endif %}
+        data-editable="{{ __SELF__.alias }}" 
         data-file="{{ __SELF__.file }}"
         data-toolbar="{{ __SELF__.toolbar }}"
         data-styles="{{ __SELF__.styles }}"
-        {% if __SELF__.type == 'media' %}
-            data-type="media"
+        {% if __SELF__.media == true %}
+            data-media
             data-width="{{ __SELF__.width|default(0) }}"
             data-height="{{ __SELF__.height|default(0) }}"
             data-mode="{{ __SELF__.mode|default('crop') }}"

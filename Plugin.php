@@ -13,8 +13,7 @@ class Plugin extends PluginBase
     /**
      * pluginDetails about this plugin.
      */
-    public function pluginDetails()
-    {
+    public function pluginDetails() {
         return [
             'name' => 'FrontEditor',
             'description' => 'Edit your content directly from frontend.',
@@ -24,26 +23,9 @@ class Plugin extends PluginBase
     }
 
     /**
-     * register method, called when the plugin is first registered.
-     */
-    public function register()
-    {
-        //
-    }
-
-    /**
-     * boot method, called right before the request route.
-     */
-    public function boot()
-    {
-        //
-    }
-
-    /**
      * registerComponents used by the frontend.
      */
-    public function registerComponents()
-    {
+    public function registerComponents() {
         return [
             'Publipresse\FrontEditor\Components\TinyMCE' => 'TinyMCE',
         ];
@@ -52,16 +34,11 @@ class Plugin extends PluginBase
     /**
      * registerPermissions used by the backend.
      */
-    public function registerPermissions()
-    {
+    public function registerPermissions() {
         return [
             'publipresse.fronteditor.editor' => [
                 'tab' => 'Frontend Editor',
                 'label' => 'Allow to use frontend editor'
-            ],
-            'publipresse.fronteditor.bypass' => [
-                'tab' => 'Frontend Editor',
-                'label' => 'Bypass editable restrictions'
             ],
             'publipresse.fronteditor.access_settings' => [
                 'tab' => 'Frontend Editor',
@@ -70,8 +47,7 @@ class Plugin extends PluginBase
         ];
     }
 
-    public function registerSettings()
-    {
+    public function registerSettings() {
         return [
             'tinymcesettings' => [
                 'label' => 'TinyMCE Settings',
