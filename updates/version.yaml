@@ -1,1 +1,4 @@
 v1.0.0: First version of FrontEditor
+v1.0.1: 
+  - Add options to position toolbar
+  - Add some validation rules to the TinyMCESetting model.

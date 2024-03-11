@@ -82,6 +82,16 @@ tabs:
                 uz: Uzbek
                 vi: Vietnamese
                 'zh-Hans': Chinese Simplified
+        toolbar_mode:
+            label: Toolbar mode
+            comment: Sticky toolbar is attached to each editable block. <br />Fixed toolbar is injected to a div that is positionned fixed bottom by default.
+            commentHtml: true
+            type: balloon-selector
+            tab: Configuration
+            default: sticky
+            options:
+                sticky: Sticky
+                fixed: Fixed
         flmngr:
             label: Flmngr API Key
             type: text

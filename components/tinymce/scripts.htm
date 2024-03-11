@@ -7,6 +7,7 @@ addEventListener('page:loaded', function() {
     const wrapper = document.querySelector('#fe-wrapper');
     const buttons = wrapper.querySelector('#fe-buttons');
     const folder = wrapper.querySelector('#fe-folder').value
+    const offset = parseInt(getComputedStyle(wrapper).getPropertyValue('--toolbar-sticky-offset'));
 
     initEditors = function() {
         const flmngrapi = wrapper.querySelector('#fe-flmngr').value;
@@ -77,6 +78,13 @@ addEventListener('page:loaded', function() {
                 entity_encoding: 'raw',
                 menubar: false,
                 toolbar: toolbar,
+                {% if __SELF__.toolbarMode == 'fixed' %}
+                    fixed_toolbar_container: '#fe-toolbar',
+                {% else %}
+                    toolbar_sticky: true,
+                    toolbar_location: 'auto',
+                    toolbar_sticky_offset: offset,
+                {% endif %}
                 link_context_toolbar: true,
                 table_appearance_options: false,
                 table_toolbar: '',

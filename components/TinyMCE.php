@@ -23,6 +23,7 @@ class TinyMCE extends ComponentBase
     public $content;
     public $toolbar;
     public $toolbarPresets;
+    public $toolbarMode;
     public $tag;
     public $class;
     public $folder;
@@ -64,6 +65,7 @@ class TinyMCE extends ComponentBase
         // Define global variables
         $this->language = TinyMCESetting::get('language');
         $this->toolbarPresets = TinyMCESetting::get('toolbars');
+        $this->toolbarMode = TinyMCESetting::get('toolbar_mode');
         $this->stylesPresets = $this->array_filter_recursive(TinyMCESetting::get('styles'));
         
         $this->foreColors = TinyMCESetting::get('forecolors');

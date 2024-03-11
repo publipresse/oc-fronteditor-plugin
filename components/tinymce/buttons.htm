@@ -1,6 +1,10 @@
 {% put frontEditor %}
     <div id="fe-wrapper">
 
+        {% if __SELF__.toolbarMode == 'fixed' %}
+            <div id="fe-toolbar"></div>
+        {% endif %}
+
         <div id="fe-buttons">
             <button class="fe-edit" onclick="initEditors()"></button>
             <button class="fe-valid" onclick="saveEditors()"></button>
