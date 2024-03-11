@@ -10,6 +10,7 @@ It was inspired by the excellent [content editor](https://octobercms.com/plugin/
 
 * Add the TinyMCE component to your page or layout
 * Check that you have `{% framework %}` and `{% scripts %}` inside layout for working ajax requests and `{% styles %}` for additional css
+* Add `{% placeholder frontEditor %}` in your layout where you want to inject fronteditor buttons
 * Call the component where you want to have an editable zone.
 
 *Minimal example:*
