@@ -20,13 +20,15 @@ addEventListener('page:loaded', function() {
             buttons.classList.add('fe-loading');
         }
         
-        // Preload file manager
-        Flmngr.load({
-            apiKey: flmngrapi,
-            urlFileManager: '/flmngr',
-            urlFiles: folder,
-            integration: 'octobercms',
-        });
+        if (typeof Flmngr != 'undefined') {
+            // Preload file manager
+            Flmngr.load({
+                apiKey: flmngrapi,
+                urlFileManager: '/flmngr',
+                urlFiles: folder,
+                integration: 'octobercms',
+            });
+        }
     
         editors.forEach(function(el) {
             const plugins = ['link', 'lists', 'media', 'code', 'table', 'emoticons', 'autolink', 'image', 'accordion', 'visualblocks'];
