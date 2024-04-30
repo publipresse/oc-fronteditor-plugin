@@ -125,12 +125,23 @@ addEventListener('page:loaded', function() {
                     
                     editor.on('execCommand', function(e) {
                         switch(e.command) {
-                            // Set image aspect ratio to be the same than the one defined in component
+                            // When image dialog is saved
                             case 'mceUpdateImage':
                                 let target = editor.selection.getNode();
+                                let src = target.getAttribute('src');
+                                let path = folder.substring(1);
+                                
+                                // Set width, height and aspect ratio to respect ones defined in the component
                                 target.setAttribute('width', el.dataset.width);
                                 target.setAttribute('height', el.dataset.height);
                                 target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
+                                
+                                // Save original image path to custom data attribute to prevent saving resized images later.
+                                if(src.includes(path)) {
+                                    let filepath = src.split('?')[0].replace(path, '').substring(1);
+                                    target.setAttribute('data-filepath', filepath);
+                                }
+                                break;
                         }
                     });
     
@@ -147,7 +158,7 @@ addEventListener('page:loaded', function() {
                         icon: 'paragraph',
                         tooltip: 'Paragraph',
                         onAction: function(api) { 
-                        editor.formatter.apply('p');
+                            editor.formatter.apply('p');
                         }
                     });
     
@@ -218,6 +229,7 @@ addEventListener('page:loaded', function() {
             }
         });
     
+        // Of nothing has changed, remove tinyMCE Instance, reset buttons and stop.
         if(isDirty === false) {
             tinyMCE.remove();
             buttons.classList.remove('fe-loading', 'fe-open');
@@ -232,22 +244,20 @@ addEventListener('page:loaded', function() {
             const shared = element.dataset.shared;
             let content = editor.getContent();
     
-            // Conver images markup
+            // Conver images markup to use october syntax and resize filter.
             if(editor.isDirty()) {
                 let dom = new DOMParser().parseFromString(content, "text/html").body;
                 if(dom) {
                     dom.querySelectorAll('img').forEach(function(el) {
+                        el.removeAttribute('style');
                         const width = element.dataset.width;
                         const height = element.dataset.height;
                         const mode = element.dataset.mode;
-                        el.removeAttribute('style');
-                        let src = new URL(el.src).pathname.replace(folder, '');
-                        if(!src.includes('/resize/')) {
-                            {% verbatim %}
-                                el.src = decodeURI("{{ '" + src + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
-                            {% endverbatim %}
-                            content = dom.innerHTML;
-                        }
+                        const filepath = el.dataset.filepath;
+                        {% verbatim %}
+                            el.src = decodeURI("{{ '" + filepath + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                        {% endverbatim %}
+                        content = dom.innerHTML;
                     });
                 }
             }

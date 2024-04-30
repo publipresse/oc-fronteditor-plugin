@@ -10,6 +10,8 @@ use Cms\Classes\Content;
 
 use Publipresse\FrontEditor\Models\TinyMCESetting;
 
+use \DOMDocument;
+
 /**
  * TinyMCE Component
  *
@@ -72,7 +74,7 @@ class TinyMCE extends ComponentBase
         $this->backColors = TinyMCESetting::get('backcolors');
         $this->flmngr = TinyMCESetting::get('flmngr');
         $this->skin = TinyMCESetting::get('skin');
-        $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'].'/'.TinyMCESetting::get('subfolder').TinyMCESetting::get('folder');
+        $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'];
     }
     
     public function onRender() {
@@ -139,7 +141,7 @@ class TinyMCE extends ComponentBase
             // create new content file if not exists
             $fileContent = Content::inTheme($this->getTheme());
         }
-
+        
         $fileContent->fill([
             'fileName' => $filePath,
             'markup' => post('content')
