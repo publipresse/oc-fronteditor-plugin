@@ -6,3 +6,5 @@ v1.0.2:
   - Prevent script to crash if Flmngr object is not available
 v1.0.3:
   - Make image saving more consistent to make sure image url is not replaced by the resized or cached equivalent.
+v1.0.4:
+  - Add anchor to plugin list
