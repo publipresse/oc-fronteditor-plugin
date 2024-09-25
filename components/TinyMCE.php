@@ -7,6 +7,7 @@ use Site;
 use Twig;
 use Cms\Classes\ComponentBase;
 use Cms\Classes\Content;
+use Cms\Classes\Page;
 
 use Publipresse\FrontEditor\Models\TinyMCESetting;
 
@@ -75,6 +76,7 @@ class TinyMCE extends ComponentBase
         $this->flmngr = TinyMCESetting::get('flmngr');
         $this->skin = TinyMCESetting::get('skin');
         $this->folder = parse_url(\Media\Classes\MediaLibrary::url(''))['path'];
+
     }
     
     public function onRender() {
@@ -148,6 +150,12 @@ class TinyMCE extends ComponentBase
         ]);
 
         $fileContent->save();
+    }
+
+    // Update page
+    public function updatePage() {
+        $currentPage = Page::load($this->getTheme(), $this->page->baseFileName);
+        $currentPage->save();
     }
 
     // Generate filepath as follow (Site group name / Site name / File name)

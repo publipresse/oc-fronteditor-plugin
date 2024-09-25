@@ -13,7 +13,7 @@
             data-mode="{{ __SELF__.mode|default('crop') }}"
         {% endif %}
         {% for key, extra in __SELF__.extras %}
-            {{ key }}="{{ extra }}"
+            data-{{ key }}="{{ extra }}"
         {% endfor %}
     >
         {{ __SELF__.content|content }}
