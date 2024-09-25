@@ -8,6 +8,6 @@ v1.0.3:
   - Make image saving more consistent to make sure image url is not replaced by the resized or cached equivalent.
 v1.0.4:
   - Add anchor to plugin list
-v1.0.5:
+v2.0.0:
   - Save page when saving content using Fronteditor to update modified date
   - Add data- prefix to extra attributes for W3C validation
