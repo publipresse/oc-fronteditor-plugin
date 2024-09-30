@@ -96,12 +96,6 @@ class TinyMCE extends ComponentBase
             $content = $this->renderContent($this->file);
             $this->content = Twig::parse($content);
         }
-
-        // Add all others properties
-        $this->extras = [];
-        foreach($properties as $key => $property) {
-            $this->extras[$key] = $property;
-        }
         
         // If user have access to the editor
         if($this->checkEditor()) {
@@ -126,6 +120,12 @@ class TinyMCE extends ComponentBase
         // Reset properties
         foreach($this->getProperties() as $key => $property) {
             $this->setProperty($key, null);
+        }
+
+        // Add all others properties
+        $this->extras = [];
+        foreach($properties as $key => $property) {
+            $this->extras[$key] = $property;
         }
         
     }

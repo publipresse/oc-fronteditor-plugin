@@ -11,3 +11,5 @@ v1.0.4:
 v2.0.0:
   - Save page when saving content using Fronteditor to update modified date
   - Add data- prefix to extra attributes for W3C validation
+v2.0.1:
+  - Fix bug about extra properties
