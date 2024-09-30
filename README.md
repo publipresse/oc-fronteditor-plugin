@@ -60,7 +60,7 @@ This plugin support any extra properties passed to the component. Can be useful 
 
 *Extra property example:*
 ```twig
-{% component 'TinyMCE' file="myfile" toolbar="h1 h2 p" class="my-class" prop1="myprop" prop2="myotherprop" %}
+{% component 'TinyMCE' file="myfile" toolbar="h1 h2 p" class="my-class" data-prop1="myprop" data-prop2="myotherprop" %}
 ```
 
 It will output something like this :
