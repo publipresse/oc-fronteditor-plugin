@@ -6,10 +6,10 @@
         data-file="{{ __SELF__.file }}"
         data-toolbar="{{ __SELF__.toolbar }}"
         data-styles="{{ __SELF__.styles }}"
-        {% if __SELF__.media == true %}
-            data-media
-            data-width="{{ __SELF__.width|default(0) }}"
-            data-height="{{ __SELF__.height|default(0) }}"
+        {% if __SELF__.media %}
+            data-media="{{ __SELF__.media|default(true) }}"
+            data-width="{{ __SELF__.width|default(false) }}"
+            data-height="{{ __SELF__.height|default(false) }}"
             data-mode="{{ __SELF__.mode|default('crop') }}"
         {% endif %}
         {% for key, extra in __SELF__.extras %}

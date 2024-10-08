@@ -170,6 +170,7 @@ class TinyMCE extends ComponentBase
         if($activeSite->group) {
             $filepath .= $activeSite->group->code.'/';
         }
+        
         if($this->property('shared') !== true) {
             $filepath .= $activeSite->code.'/';
         }

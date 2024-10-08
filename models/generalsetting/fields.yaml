@@ -1,0 +1,33 @@
+# ===================================
+#  Form Field Definitions
+# ===================================
+
+fields:
+    copy_section:
+        type: section
+        label: Copy
+        comment: Copy content files from source to target
+    copy_from:
+        label: Source
+        type: dropdown
+        span: left
+        placeholder: Choose a source
+    copy_to:
+        label: Target
+        type: dropdown
+        span: right
+        placeholder: Choose a target
+    copy_overwrite:
+        label: Overwrite existing files ?
+        type: switch
+        span: full
+        default: false
+    copy_ignore:
+        label: Ignore folders ?
+        comment: Ignore following folders (one per line), can be anywhere in your folder structure
+        type: textarea
+        span: full
+    copy_btn:
+        type: partial
+        path: $/publipresse/fronteditor/models/generalsetting/field_copy_btn.php
+        span: full

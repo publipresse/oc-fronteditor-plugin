@@ -149,9 +149,10 @@ interface ElementSettings {
     void_elements?: string;
     whitespace_elements?: string;
     transparent_elements?: string;
+    wrap_block_elements?: string;
 }
 interface SchemaSettings extends ElementSettings {
-    custom_elements?: string;
+    custom_elements?: string | Record<string, CustomElementSpec>;
     extended_valid_elements?: string;
     invalid_elements?: string;
     invalid_styles?: string | Record<string, string>;
@@ -199,6 +200,12 @@ interface SchemaMap {
 interface SchemaRegExpMap {
     [name: string]: RegExp;
 }
+interface CustomElementSpec {
+    extends?: string;
+    attributes?: string[];
+    children?: string[];
+    padEmpty?: boolean;
+}
 interface Schema {
     type: SchemaType;
     children: Record<string, SchemaMap>;
@@ -220,10 +227,13 @@ interface Schema {
     getSpecialElements: () => SchemaRegExpMap;
     isValidChild: (name: string, child: string) => boolean;
     isValid: (name: string, attr?: string) => boolean;
+    isBlock: (name: string) => boolean;
+    isInline: (name: string) => boolean;
+    isWrapper: (name: string) => boolean;
     getCustomElements: () => SchemaMap;
     addValidElements: (validElements: string) => void;
     setValidElements: (validElements: string) => void;
-    addCustomElements: (customElements: string) => void;
+    addCustomElements: (customElements: string | Record<string, CustomElementSpec>) => void;
     addValidChildren: (validChildren: any) => void;
 }
 type Attributes$1 = Array<{
@@ -370,6 +380,12 @@ interface Annotator {
     removeAll: (name: string) => void;
     getAll: (name: string) => Record<string, Element[]>;
 }
+interface IsEmptyOptions {
+    readonly skipBogus?: boolean;
+    readonly includeZwsp?: boolean;
+    readonly checkRootAsContent?: boolean;
+    readonly isContent?: (node: Node) => boolean;
+}
 interface GeomRect {
     readonly x: number;
     readonly y: number;
@@ -386,7 +402,7 @@ interface Rect {
     fromClientRect: (clientRect: DOMRect) => GeomRect;
 }
 interface NotificationManagerImpl {
-    open: (spec: NotificationSpec, closeCallback: () => void) => NotificationApi;
+    open: (spec: NotificationSpec, closeCallback: () => void, hasEditorFocus: () => boolean) => NotificationApi;
     close: <T extends NotificationApi>(notification: T) => void;
     getArgs: <T extends NotificationApi>(notification: T) => NotificationSpec;
 }
@@ -396,7 +412,6 @@ interface NotificationSpec {
     icon?: string;
     progressBar?: boolean;
     timeout?: number;
-    closeButton?: boolean;
 }
 interface NotificationApi {
     close: () => void;
@@ -425,6 +440,7 @@ interface UploadResult$2 {
     status: boolean;
     error?: UploadFailure;
 }
+type BlockPatternTrigger = 'enter' | 'space';
 interface RawPattern {
     start?: any;
     end?: any;
@@ -432,6 +448,7 @@ interface RawPattern {
     cmd?: any;
     value?: any;
     replacement?: any;
+    trigger?: BlockPatternTrigger;
 }
 interface InlineBasePattern {
     readonly start: string;
@@ -449,6 +466,7 @@ interface InlineCmdPattern extends InlineBasePattern {
 type InlinePattern = InlineFormatPattern | InlineCmdPattern;
 interface BlockBasePattern {
     readonly start: string;
+    readonly trigger: BlockPatternTrigger;
 }
 interface BlockFormatPattern extends BlockBasePattern {
     readonly type: 'block-format';
@@ -527,6 +545,7 @@ interface CustomEditorNewSpec extends FormComponentSpec {
     tag?: string;
     scriptId: string;
     scriptUrl: string;
+    onFocus?: (e: HTMLElement) => void;
     settings?: any;
 }
 type CustomEditorSpec = CustomEditorOldSpec | CustomEditorNewSpec;
@@ -541,7 +560,9 @@ interface GridSpec {
 interface HtmlPanelSpec {
     type: 'htmlpanel';
     html: string;
+    onInit?: (el: HTMLElement) => void;
     presets?: 'presentation' | 'document';
+    stretched?: boolean;
 }
 interface IframeSpec extends FormComponentWithLabelSpec {
     type: 'iframe';
@@ -567,6 +588,7 @@ interface LabelSpec {
     label: string;
     items: BodyComponentSpec[];
     align?: Alignment;
+    for?: string;
 }
 interface ListBoxSingleItemSpec {
     text: string;
@@ -635,6 +657,7 @@ interface BaseToolbarButtonInstanceApi {
 interface ToolbarButtonSpec extends BaseToolbarButtonSpec<ToolbarButtonInstanceApi> {
     type?: 'button';
     onAction: (api: ToolbarButtonInstanceApi) => void;
+    shortcut?: string;
 }
 interface ToolbarButtonInstanceApi extends BaseToolbarButtonInstanceApi {
 }
@@ -776,6 +799,7 @@ interface NestedMenuItemSpec extends CommonMenuItemSpec {
     onSetup?: (api: NestedMenuItemInstanceApi) => (api: NestedMenuItemInstanceApi) => void;
 }
 interface NestedMenuItemInstanceApi extends CommonMenuItemInstanceApi {
+    setTooltip: (tooltip: string) => void;
     setIconFill: (id: string, value: string) => void;
 }
 type MenuButtonItemTypes = NestedMenuItemContents;
@@ -831,6 +855,7 @@ interface ToolbarSplitButtonInstanceApi {
     setIconFill: (id: string, value: string) => void;
     isActive: () => boolean;
     setActive: (state: boolean) => void;
+    setTooltip: (tooltip: string) => void;
     setText: (text: string) => void;
     setIcon: (icon: string) => void;
 }
@@ -844,6 +869,7 @@ interface BaseToolbarToggleButtonInstanceApi extends BaseToolbarButtonInstanceAp
 interface ToolbarToggleButtonSpec extends BaseToolbarToggleButtonSpec<ToolbarToggleButtonInstanceApi> {
     type?: 'togglebutton';
     onAction: (api: ToolbarToggleButtonInstanceApi) => void;
+    shortcut?: string;
 }
 interface ToolbarToggleButtonInstanceApi extends BaseToolbarToggleButtonInstanceApi {
 }
@@ -876,6 +902,7 @@ interface UrlInputSpec extends FormComponentWithLabelSpec {
     type: 'urlinput';
     filetype?: 'image' | 'media' | 'file';
     enabled?: boolean;
+    picker_text?: string;
 }
 interface UrlInputData {
     value: string;
@@ -1018,8 +1045,7 @@ interface AutocompleterItemSpec {
 type AutocompleterContents = SeparatorItemSpec | AutocompleterItemSpec | CardMenuItemSpec;
 interface AutocompleterSpec {
     type?: 'autocompleter';
-    ch?: string;
-    trigger?: string;
+    trigger: string;
     minChars?: number;
     columns?: ColumnTypes;
     matches?: (rng: Range, text: string, pattern: string) => boolean;
@@ -1368,6 +1394,7 @@ interface DomParserSettings {
     allow_unsafe_link_target?: boolean;
     blob_cache?: BlobCache;
     convert_fonts_to_spans?: boolean;
+    convert_unsafe_embeds?: boolean;
     document?: Document;
     fix_list_elements?: boolean;
     font_size_legacy_values?: string;
@@ -1376,8 +1403,9 @@ interface DomParserSettings {
     inline_styles?: boolean;
     pad_empty_with_br?: boolean;
     preserve_cdata?: boolean;
-    remove_trailing_brs?: boolean;
     root_name?: string;
+    sandbox_iframes?: boolean;
+    sandbox_iframes_exclusions?: string[];
     sanitize?: boolean;
     validate?: boolean;
 }
@@ -1398,8 +1426,10 @@ interface StyleSheetLoaderSettings {
 }
 interface StyleSheetLoader {
     load: (url: string) => Promise<void>;
+    loadRawCss: (key: string, css: string) => void;
     loadAll: (urls: string[]) => Promise<string[]>;
     unload: (url: string) => void;
+    unloadRawCss: (key: string) => void;
     unloadAll: (urls: string[]) => void;
     _setReferrerPolicy: (referrerPolicy: ReferrerPolicy) => void;
     _setContentCssCors: (contentCssCors: boolean) => void;
@@ -1582,6 +1612,8 @@ interface EditorEventMap extends Omit<NativeEventMap, 'blur' | 'focus'> {
     };
     'resize': UIEvent;
     'scroll': UIEvent;
+    'input': InputEvent;
+    'beforeinput': InputEvent;
     'detach': {};
     'remove': {};
     'init': {};
@@ -1824,11 +1856,13 @@ interface BaseEditorOptions {
     contextmenu?: string | string[] | false;
     contextmenu_never_use_native?: boolean;
     convert_fonts_to_spans?: boolean;
+    convert_unsafe_embeds?: boolean;
     convert_urls?: boolean;
     custom_colors?: boolean;
-    custom_elements?: string;
+    custom_elements?: string | Record<string, CustomElementSpec>;
     custom_ui_selector?: string;
     custom_undo_redo_levels?: number;
+    default_font_stack?: string[];
     deprecation_warnings?: boolean;
     directionality?: 'ltr' | 'rtl';
     doctype?: string;
@@ -1936,6 +1970,8 @@ interface BaseEditorOptions {
     resize?: boolean | 'both';
     resize_img_proportional?: boolean;
     root_name?: string;
+    sandbox_iframes?: boolean;
+    sandbox_iframes_exclusions?: string[];
     schema?: SchemaType;
     selector?: string;
     setup?: SetupCallback;
@@ -1985,6 +2021,7 @@ interface BaseEditorOptions {
     visual_table_class?: string;
     width?: number | string;
     xss_sanitization?: boolean;
+    license_key?: string;
     disable_nodechange?: boolean;
     forced_plugins?: string | string[];
     plugin_base_urls?: Record<string, string>;
@@ -2019,7 +2056,9 @@ interface EditorOptions extends NormalizedEditorOptions {
     color_default_foreground: string;
     content_css: string[];
     contextmenu: string[];
+    convert_unsafe_embeds: boolean;
     custom_colors: boolean;
+    default_font_stack: string[];
     document_base_url: string;
     init_content_sync: boolean;
     draggable_modal: boolean;
@@ -2067,6 +2106,8 @@ interface EditorOptions extends NormalizedEditorOptions {
     promotion: boolean;
     readonly: boolean;
     removed_menuitems: string;
+    sandbox_iframes: boolean;
+    sandbox_iframes_exclusions: string[];
     toolbar: boolean | string | string[] | Array<ToolbarGroup>;
     toolbar_groups: Record<string, GroupToolbarButtonSpec>;
     toolbar_location: ToolbarLocation;
@@ -2266,9 +2307,7 @@ interface DOMUtils {
     findCommonAncestor: (a: Node, b: Node) => Node | null;
     run<R, T extends Node>(this: DOMUtils, elm: T | T[], func: (node: T) => R, scope?: any): typeof elm extends Array<any> ? R[] : R;
     run<R, T extends Node>(this: DOMUtils, elm: RunArguments<T>, func: (node: T) => R, scope?: any): RunResult<typeof elm, R>;
-    isEmpty: (node: Node, elements?: Record<string, any>, options?: ({
-        includeZwsp?: boolean;
-    })) => boolean;
+    isEmpty: (node: Node, elements?: Record<string, any>, options?: IsEmptyOptions) => boolean;
     createRng: () => Range;
     nodeIndex: (node: Node, normalized?: boolean) => number;
     split: {
@@ -2626,6 +2665,7 @@ interface Options {
     set: <K extends string, T>(name: K, value: K extends keyof NormalizedEditorOptions ? NormalizedEditorOptions[K] : T) => boolean;
     unset: (name: string) => boolean;
     isSet: (name: string) => boolean;
+    debug: () => void;
 }
 interface UploadResult$1 {
     element: HTMLImageElement;
@@ -3030,6 +3070,8 @@ interface IconManager {
 interface Resource {
     load: <T = any>(id: string, url: string) => Promise<T>;
     add: (id: string, data: any) => void;
+    has: (id: string) => boolean;
+    get: (id: string) => any;
     unload: (id: string) => void;
 }
 type TextPatterns_d_Pattern = Pattern;

@@ -13,3 +13,9 @@ v2.0.0:
   - Add data- prefix to extra attributes for W3C validation
 v2.0.1:
   - Fix bug about extra properties
+v2.0.2:
+  - Update to TinyMCE 7.3
+  - Media mode will automatically add tools if toolbar is empty (default to "image" and "media")
+  - Add loading parameter when working with image (default to "lazy")
+  - Add class to body when Fronteditor is open
+  - Add settings and artisan command to copy content from a source to a target site

@@ -15,6 +15,9 @@ addEventListener('page:loaded', function() {
         const language = wrapper.querySelector('#fe-language').value;
         const editors = document.querySelectorAll('[data-editable]');
         
+        // Add class to body
+        document.querySelector('body').classList.add('fe-open');
+        
         // Don't display infinite loading if there is no editable content
         if(editors.length > 0) {
             buttons.classList.add('fe-loading');
@@ -32,6 +35,7 @@ addEventListener('page:loaded', function() {
     
         editors.forEach(function(el) {
             const plugins = ['link', 'anchor', 'lists', 'media', 'code', 'table', 'emoticons', 'autolink', 'image', 'accordion', 'visualblocks'];
+            const isMedia = el.hasAttribute('data-media');
             
             // If toolbar is a preset : load it
             let toolbar = el.dataset.toolbar;
@@ -41,6 +45,23 @@ addEventListener('page:loaded', function() {
                     toolbar = toolbarPreset.value;
                 }
             }
+
+            // If media == image or video
+            if(isMedia) {
+                switch(el.dataset.media) {
+                    case 'image':
+                        toolbar += ' image';
+                        break;
+                    case 'video':
+                        toolbar += ' media';
+                        break;
+                    default:
+                        toolbar += ' image media';
+                        break;
+                }
+            }
+
+            console.log("Toolbar " + toolbar);
     
             // If styles is a preset : load it
             let styles = el.dataset.styles;
@@ -90,7 +111,7 @@ addEventListener('page:loaded', function() {
                 link_context_toolbar: true,
                 table_appearance_options: false,
                 table_toolbar: '',
-                extended_valid_elements: 'img[src|width|height|alt|style|loading=lazy],iframe[src|allowfullscreen]',
+                extended_valid_elements: 'img[src|width|height|alt|style|loading],iframe[src|allowfullscreen]',
                 preview_styles: false,
                 relative_urls: true,
                 object_resizing: false,
@@ -134,6 +155,7 @@ addEventListener('page:loaded', function() {
                                 // Set width, height and aspect ratio to respect ones defined in the component
                                 target.setAttribute('width', el.dataset.width);
                                 target.setAttribute('height', el.dataset.height);
+                                target.setAttribute('loading', el.dataset.loading || 'lazy');
                                 target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
                                 
                                 // Save original image path to custom data attribute to prevent saving resized images later.
@@ -147,7 +169,7 @@ addEventListener('page:loaded', function() {
     
                     // Prevent editor with only just images and media to allow something else
                     editor.on('keydown', function (e) {
-                        if(el.hasAttribute('data-media')) {
+                        if(isMedia) {
                             e.preventDefault();
                             e.stopPropagation();
                         }
@@ -207,8 +229,13 @@ addEventListener('page:loaded', function() {
     }
     
     destroyEditors = function() {
+        
         buttons.classList.add('fe-loading');
         const editors = tinymce.get();
+
+        // Remove class to body
+        document.querySelector('body').classList.remove('fe-open');
+
         editors.forEach(function(editor) {
             editor.resetContent();
             editor.remove();
@@ -221,6 +248,9 @@ addEventListener('page:loaded', function() {
         let isDirty = false;
         
         buttons.classList.add('fe-loading');
+
+        // Remove class to body
+        document.querySelector('body').classList.remove('fe-open');
     
         // Check if at least one editor has changed;
         editors.forEach(function(editor) {
@@ -236,7 +266,6 @@ addEventListener('page:loaded', function() {
             return;
         }
 
-
         editors.forEach(function(editor) {
             
             const element = editor.getElement();
@@ -251,9 +280,9 @@ addEventListener('page:loaded', function() {
                 if(dom) {
                     dom.querySelectorAll('img').forEach(function(el) {
                         el.removeAttribute('style');
-                        const width = element.dataset.width;
-                        const height = element.dataset.height;
-                        const mode = element.dataset.mode;
+                        const width = element.dataset.width == 0 ? null : element.dataset.width;
+                        const height = element.dataset.height == 0 ? null : element.dataset.height;
+                        const mode = element.dataset.mode == 0 ? 'auto' : element.dataset.mode;
                         const filepath = el.dataset.filepath;
                         {% verbatim %}
                             el.src = decodeURI("{{ '" + filepath + "'|media|resize("+width+", "+height+", '"+mode+"') }}");

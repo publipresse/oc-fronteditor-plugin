@@ -40,18 +40,17 @@ The cool thing is that your image will use the [|resize](https://docs.octobercms
 
 The other cool thing is that you will be able to manage your image using the [flmngr](https://flmngr.com/) media manager. This tool have premium featured to edit images, pick images from unsplash etc... but the file management part is free.
 
-Here is the extra needed properties when using media mode:
+#### Here is the extra needed properties when using media mode:
 
-* **media=true**: Enable media mode for this block
-* **toolbar**: image and/or media (for video)
-* **width**: Width of the image
-* **height**: Height of the image
+* **media**: Enable media mode for this block. Set value to "image" or "video" to activate corresponding tool, any other value activate both. If you define a toolbar manually, media setting will be ignored.
+* **width**: Width of the image. If empty, image will not be resized
+* **height**: Height of the image. If empty, image will not be resized
 * **mode**: Resize mode 
-
+* **loading**: Loading mode for image, by default "lazy"
 
 *Media mode example:*
 ```twig
-{% component 'TinyMCE' file="myfile" tag="p" toolbar="image media" media=true width=500 height=500 mode="crop" %}
+{% component 'TinyMCE' file="myfile" tag="p" media=true width=500 height=500 mode="crop" %}
 ```
 
 ### Extra properties
@@ -60,10 +59,10 @@ This plugin support any extra properties passed to the component. Can be useful 
 
 *Extra property example:*
 ```twig
-{% component 'TinyMCE' file="myfile" toolbar="h1 h2 p" class="my-class" data-prop1="myprop" data-prop2="myotherprop" %}
+{% component 'TinyMCE' file="myfile" toolbar="h1 h2 p" class="my-class" prop1="myprop" prop2="myotherprop" %}
 ```
 
 It will output something like this :
 ```html
-<div class="my-class" prop1="myprop" prop2="myotherprop"></div>
+<div class="my-class" data-prop1="myprop" data-prop2="myotherprop"></div>
 ```
