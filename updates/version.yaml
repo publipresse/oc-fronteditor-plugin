@@ -19,3 +19,5 @@ v2.0.2:
   - Add loading parameter when working with image (default to "lazy")
   - Add class to body when Fronteditor is open
   - Add settings and artisan command to copy content from a source to a target site
+v2.0.3:
+  - Improve styles management, minor bug fixes
