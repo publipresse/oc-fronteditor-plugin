@@ -60,23 +60,30 @@ addEventListener('page:loaded', function() {
                         break;
                 }
             }
-
-            console.log("Toolbar " + toolbar);
-    
+            
             // If styles is a preset : load it
-            let styles = el.dataset.styles;
-            if(styles.trim().indexOf(' ') == -1 == true) {
-                let stylesPreset = wrapper.querySelector('#fe-style-'+styles);
-                if(stylesPreset) {
+            let styles = el.hasAttribute("data-styles") || toolbar.includes("styles");
+            if (styles) {
+                if(!toolbar.includes("styles")) {
+                    toolbar += ' styles';
+                }
+                console.log(toolbar);
+                let stylesPreset = wrapper.querySelector('#fe-style-' + el.dataset.styles?.trim());
+                if(!stylesPreset) {
+                    stylesPreset = wrapper.querySelector('[id*="fe-style"]');
+                }
+                
+                if (stylesPreset) {
                     styles = stylesPreset.value;
                     try {
                         styles = JSON.parse(styles);
-                    } catch(e) {
+                    } catch (e) {
                         console.log(e);
                     }
                 }
             }
-    
+
+
             // Load forecolors
             let forecolors = wrapper.querySelector('#fe-forecolors').value;
             if (forecolors.length > 0) {
@@ -266,10 +273,10 @@ addEventListener('page:loaded', function() {
             return;
         }
 
-        editors.forEach(function(editor) {
+        editors.forEach(function(editor, index) {
             
             const element = editor.getElement();
-            const alias = element.dataset.editable;
+            let alias = element.dataset.editable;
             const file = element.dataset.file;
             const shared = element.dataset.shared;
             let content = editor.getContent();
@@ -307,12 +314,14 @@ addEventListener('page:loaded', function() {
                 editor.remove();
             }
             buttons.classList.remove('fe-loading', 'fe-open');
-        });
 
-        // If at least one editor has been modified, save page to change modified date
-        if(isDirty == true) {
-            oc.ajax(alias+'::updatePage');
-        }
+            // Save page on last iteration if one editor has been modified
+            if (index === editors.length - 1) {
+                if(isDirty == true) {
+                    oc.ajax(alias+'::onUpdatePage');
+                }
+            }
+        });
         
     }
 

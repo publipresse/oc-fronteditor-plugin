@@ -143,6 +143,9 @@ tabs:
                             block:
                                 title: Block
                                 type: string
+                            inline:
+                                title: Inline
+                                type: string
                             selector:
                                 title: Selector
                                 type: string

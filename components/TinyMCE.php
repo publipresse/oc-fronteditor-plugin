@@ -153,7 +153,7 @@ class TinyMCE extends ComponentBase
     }
 
     // Update page
-    public function updatePage() {
+    public function onUpdatePage() {
         $currentPage = Page::load($this->getTheme(), $this->page->baseFileName);
         $currentPage->save();
     }
