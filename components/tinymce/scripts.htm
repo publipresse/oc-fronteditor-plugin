@@ -62,12 +62,11 @@ addEventListener('page:loaded', function() {
             }
             
             // If styles is a preset : load it
-            let styles = el.hasAttribute("data-styles") || toolbar.includes("styles");
+            let styles = el.dataset.styles || toolbar.includes("styles");
             if (styles) {
                 if(!toolbar.includes("styles")) {
                     toolbar += ' styles';
                 }
-                console.log(toolbar);
                 let stylesPreset = wrapper.querySelector('#fe-style-' + el.dataset.styles?.trim());
                 if(!stylesPreset) {
                     stylesPreset = wrapper.querySelector('[id*="fe-style"]');
