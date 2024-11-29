@@ -22,7 +22,7 @@
     <{{ tag }} 
         class="{{ __SELF__.class }}"
         {% for key, extra in __SELF__.extras %}
-            {{ key }}="{{ extra }}"
+            data-{{ key }}="{{ extra }}"
         {% endfor %}
     >
         {{ __SELF__.content|content }}
