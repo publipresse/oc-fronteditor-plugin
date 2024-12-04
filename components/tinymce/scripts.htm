@@ -155,7 +155,7 @@ addEventListener('page:loaded', function() {
                             // When image dialog is saved
                             case 'mceUpdateImage':
                                 let target = editor.selection.getNode();
-                                let src = target.getAttribute('src');
+                                let src = target.getAttribute('src').replace('../', '');
                                 let path = folder.substring(1);
                                 
                                 // Set width, height and aspect ratio to respect ones defined in the component

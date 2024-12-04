@@ -25,3 +25,5 @@ v2.0.4:
   - Fix small bug related to styles management improvements
 v2.0.5:
   - Fix bug where attributes are not prefixed with data- for anonymous users
+v2.0.6:
+  - Fix bug that can lead to error due to wrong data-filepath generation when changing image in media mode
