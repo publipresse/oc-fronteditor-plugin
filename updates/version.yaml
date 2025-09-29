@@ -27,3 +27,5 @@ v2.0.5:
   - Fix bug where attributes are not prefixed with data- for anonymous users
 v2.0.6:
   - Fix bug that can lead to error due to wrong data-filepath generation when changing image in media mode
+v2.0.7:
+  - Fix bug in multisite context with the onUpdatePage method
