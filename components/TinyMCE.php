@@ -155,7 +155,12 @@ class TinyMCE extends ComponentBase
     // Update page
     public function onUpdatePage() {
         $currentPage = Page::load($this->getTheme(), $this->page->baseFileName);
-        $currentPage->save();
+        if ($currentPage) {
+            $filePath = $currentPage->getFilePath();
+            if (file_exists($filePath)) {
+                touch($filePath);
+            }
+        }
     }
 
     // Generate filepath as follow (Site group name / Site name / File name)
