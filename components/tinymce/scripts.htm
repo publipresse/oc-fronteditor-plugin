@@ -120,17 +120,14 @@ addEventListener('page:loaded', function() {
                 extended_valid_elements: 'img[src|width|height|alt|style|loading],iframe[src|allowfullscreen]',
                 preview_styles: false,
                 relative_urls: true,
-                object_resizing: false,
-                image_dimensions: false,
-                media_dimensions: false,
+                object_resizing: true,
+                image_dimensions: true,
+                media_dimensions: true,
                 save_enablewhendirty: false,
                 paste_block_drop: true,
                 style_formats: styles,
                 style_formats_merge: false,
                 style_formats_autohide: true,
-                formats: {
-                    underline: { inline: 'u', exact: true }
-                },
                 end_container_on_empty_block: true,
                 color_map_foreground: forecolors,
                 color_map_background: backcolors,
@@ -162,10 +159,19 @@ addEventListener('page:loaded', function() {
                                 let path = folder.substring(1);
                                 
                                 // Set width, height and aspect ratio to respect ones defined in the component
-                                target.setAttribute('width', el.dataset.width);
-                                target.setAttribute('height', el.dataset.height);
                                 target.setAttribute('loading', el.dataset.loading || 'lazy');
-                                target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
+
+                                if (el.dataset.width) {
+                                    target.setAttribute('width', el.dataset.width);
+                                }
+                                
+                                if(el.dataset.height) {
+                                    target.setAttribute('height', el.dataset.height);
+                                }
+
+                                if (el.dataset.width && el.dataset.height) {
+                                    target.style.aspectRatio = el.dataset.width + '/' + el.dataset.height;
+                                }
                                 
                                 // Save original image path to custom data attribute to prevent saving resized images later.
                                 if(src.includes(path)) {
@@ -294,7 +300,11 @@ addEventListener('page:loaded', function() {
                         const mode = element.dataset.mode == 0 ? 'auto' : element.dataset.mode;
                         const filepath = el.dataset.filepath;
                         {% verbatim %}
-                            el.src = decodeURI("{{ '" + filepath + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                            if(width || height) {
+                                el.src = decodeURI("{{ '" + filepath + "'|media|resize("+width+", "+height+", '"+mode+"') }}");
+                            } else {
+                                el.src = decodeURI("{{ '" + filepath + "'|media }}");
+                            }
                         {% endverbatim %}
                         content = dom.innerHTML;
                     });
