@@ -4,6 +4,7 @@
     "description": "No description provided yet...",
     "require": {
         "composer/installers": "~1.0",
-        "edsdk/flmngr-server-php": "^1.6"
+        "edsdk/flmngr-server-php": "^1.6",
+        "october/rain": "^4.4"
     }
 }

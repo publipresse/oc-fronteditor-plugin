@@ -31,3 +31,6 @@ v2.0.7:
   - Fix bug in multisite context with the onUpdatePage method
 v2.0.8:
   - Fix using images in non-media mode + add image dimensions
+v3.0.0:
+  - Requires OctoberCMS 4.4+
+  - Drop the site group code from the generated content file path, since it duplicated the locale prefix now added natively by October's translated content blocks (fixes "Invalid file name" errors on multisite installs, e.g. fr/default/fr/accueil/...)

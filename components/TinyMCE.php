@@ -163,7 +163,8 @@ class TinyMCE extends ComponentBase
         }
     }
 
-    // Generate filepath as follow (Site group name / Site name / File name)
+    // Generate filepath as follow (Site name / File name), matching October's
+    // native content locale directory convention (see Cms\Classes\Content::findLocalized).
     // If shared = true, site name is ommitted.
     public function getFilePath($filename) {
 
@@ -172,14 +173,10 @@ class TinyMCE extends ComponentBase
         $filename[1] = isset($filename[1])? $filename[1] : 'htm';
 
         $filepath = '';
-        if($activeSite->group) {
-            $filepath .= $activeSite->group->code.'/';
-        }
-        
         if($this->property('shared') !== true) {
             $filepath .= $activeSite->code.'/';
         }
-        
+
         $filepath .= $filename[0].'.'.$filename[1];
         return $filepath;
     }
